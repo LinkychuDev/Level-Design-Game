@@ -20,7 +20,7 @@ public class PlayerAbilities : MonoBehaviour
 
 
     //[SerializeField] private DetectionSphere detectionSphere;
-    public SystemicBlock block;
+    private ISubstance block;
    
     public LayerMask layerMask;
     public Animator cameraAnimator;
@@ -28,13 +28,17 @@ public class PlayerAbilities : MonoBehaviour
     private bool isUsing;
 
     private bool hasCameraBeenSet;
-    
+
+    private bool abilityUsed = false;
+
+    [SerializeField] private GameObject iceImage;
+    [SerializeField] private GameObject fireImage;
    // public bool isUsingAbility;
 
    private void Start()
    {
        //detectionSphere.gameObject.SetActive(false);
-      
+      SetImage(currentAbility);
    }
 
    private void OnEnable()
@@ -65,12 +69,16 @@ public class PlayerAbilities : MonoBehaviour
         }
         
         currentAbility = (AbilityType)(abilityType);
-        
+        SetImage(currentAbility);
 
     }
     private void OnAbilityPerformed(InputAction.CallbackContext obj)
     {
         isUsing = !isUsing;
+        if (isUsing)
+        {
+            abilityUsed = true;
+        }
     }
 
     private void OnDisable()
@@ -86,58 +94,73 @@ public class PlayerAbilities : MonoBehaviour
     {
        
         currentAbility = AbilityType.Ice;
+        SetImage(currentAbility);
 
-        isUsing = false;
     }
 
     private void OnFireSelected(InputAction.CallbackContext ctx)
     {
         currentAbility = AbilityType.Fire;
-
-        isUsing = false;
+        SetImage(currentAbility);
+       
 
     }
 
 
     private void Update()
     {
-        if (isUsing)
+        if (abilityUsed)
         {
-            //inputManager.playerInput.SwitchCurrentActionMap("Ability");
 
-            if (!hasCameraBeenSet)
-            {
-                cameraAnimator.Play("Third Person Aim");
-                hasCameraBeenSet = true;
-            }
-            
-            Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
-            
-            RaycastHit hit;
 
-           // detectionSphere.Init(maxRayDistance, currentAbility);
-           // detectionSphere.gameObject.SetActive(true);
-            
-            
-            Shader.SetGlobalFloat("_EnvironmentState", (float)currentAbility);
-          //  Debug.DrawRay(ray.origin, ray.direction * maxRayDistance, Color.red);
-            
-            Debug.Log(currentAbility);
-            
-            if (Physics.Raycast(ray, out hit, maxRayDistance, ~layerMask))
+            if (isUsing)
             {
-                //Highlight Object
-                Debug.Log(hit.transform.name);
-                if (hit.collider.TryGetComponent(out SystemicBlock block) )
+                //inputManager.playerInput.SwitchCurrentActionMap("Ability");
+
+                if (!hasCameraBeenSet)
                 {
-                    this.block = block;
-                    var material = this.block.GetComponent<Renderer>().material;
-                    material.SetFloat("_IsHovered", 1);
-                    if (inputManager.input.Ability.Use.IsPressed())
+                    cameraAnimator.Play("Third Person Aim");
+                    PlayerState.instance.PlayerAimEvent(true);
+                    hasCameraBeenSet = true;
+                }
+
+                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+
+                RaycastHit hit;
+
+                // detectionSphere.Init(maxRayDistance, currentAbility);
+                // detectionSphere.gameObject.SetActive(true);
+
+
+               // Shader.SetGlobalFloat("_EnvironmentState", (float)currentAbility);
+                //  Debug.DrawRay(ray.origin, ray.direction * maxRayDistance, Color.red);
+
+                Debug.Log(currentAbility);
+
+                if (Physics.Raycast(ray, out hit, maxRayDistance, ~layerMask))
+                {
+                    //Highlight Object
+                    Debug.Log(hit.transform.name);
+                    if (hit.collider.TryGetComponent(out ISubstance block))
                     {
-                        UseObject(material);
+                        this.block = block;
+                        //var material = this.block.GetComponent<Renderer>().material;
+                        
+                        block.Hover();  
+                        if (inputManager.input.Ability.Use.IsPressed())
+                        {
+                            UseObject(block._material);
+                        }
+
                     }
-                   
+
+                    else
+                    {
+                        ClearBlock();
+                    }
+
+
+
                 }
 
                 else
@@ -145,31 +168,23 @@ public class PlayerAbilities : MonoBehaviour
                     ClearBlock();
                 }
 
-               
-                
             }
 
             else
             {
-                ClearBlock();
+                CancelAbility();
             }
-
         }
 
-        else
-        {
-           CancelAbility();
-        }
-        
-        
+
     }
 
     void ClearBlock()
     {
         if (this.block != null)
         {
-            Debug.Log("Clearing Block Information: " + this.block.name);
-            block.GetComponent<Renderer>().material.SetFloat("_IsHovered", 0);
+           
+            block.UnHover();
             this.block = null;
         }
     }
@@ -178,7 +193,8 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (currentAbility == AbilityType.Fire)
         {
-                            
+                           
+            //melt ice
             if (block.SubstanceType == SubstanceType.Frozen)
             {
                 material.SetFloat("_IsFrozen", 0);
@@ -197,13 +213,14 @@ public class PlayerAbilities : MonoBehaviour
 
         else
         {
+            //make steam
             if (block.SubstanceType == SubstanceType.Burning)
             {
                 material.SetFloat("_IsFrozen", 0);
                 material.SetFloat("_IsOnFire", 0);
                 block.Steam();
             }
-
+            
             else
             {
                 material.SetFloat("_IsOnFire", 0);
@@ -214,9 +231,22 @@ public class PlayerAbilities : MonoBehaviour
         }
         CancelAbility();
     }
-    
 
-   
+
+    void SetImage(AbilityType abilityType)
+    {
+        switch (abilityType)
+        {
+            case AbilityType.Fire:
+                fireImage.SetActive(true);
+                iceImage.SetActive(false);
+                break;
+            case AbilityType.Ice:
+                iceImage.SetActive(true);
+                fireImage.SetActive(false);
+                break;
+        }
+    }
 
     void CancelAbility()
     {
@@ -231,14 +261,16 @@ public class PlayerAbilities : MonoBehaviour
 
         if (block != null)
         {
-            block.GetComponent<Renderer>().material.SetFloat("_IsHovered", 0);
+            block.UnHover();
         }
             
         this.block = null;
-        Shader.SetGlobalFloat("_EnvironmentState", 0);
+        //Shader.SetGlobalFloat("_EnvironmentState", 0);
         cameraAnimator.Play("Third Person");
+        PlayerState.instance.PlayerAimEvent(false);
         hasCameraBeenSet = false;
         isUsing = false;
+        abilityUsed = false;
        // detectionSphere.blocks.Clear();
        // detectionSphere.renderers.Clear();
        // detectionSphere.gameObject.SetActive(false);

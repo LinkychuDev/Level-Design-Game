@@ -3,14 +3,15 @@ using UnityEngine;
 public class SystemicBlock : MonoBehaviour, ISubstance
 {
     public SubstanceType SubstanceType { get;  private set; }
+    public Material Material { get; }
 
 
     public SubstanceType substanceTypeReference;
    
     Renderer _renderer;
-    private Rigidbody _rigidbody;
     public GameObject smokeVFX;
-    private Material _material;
+
+    public Material _material { get; private set; }
     //freeze
     
     //fire hit then melt
@@ -25,8 +26,8 @@ public class SystemicBlock : MonoBehaviour, ISubstance
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
         _renderer = GetComponent<Renderer>();
+        
         _material = _renderer.material;
     }
 
@@ -34,6 +35,17 @@ public class SystemicBlock : MonoBehaviour, ISubstance
     void Update()
     {
        // substanceTypeReference = SubstanceType;
+    }
+    
+    
+    public void Hover()
+    {
+       _material.SetFloat("_IsHovered", 1);
+    }
+
+    public void UnHover()
+    {
+       _material.SetFloat("_IsHovered", 0);
     }
 
     public void Highlight(AbilityType abilityType)

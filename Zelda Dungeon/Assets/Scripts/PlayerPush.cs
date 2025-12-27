@@ -12,7 +12,6 @@ public class PlayerPush : MonoBehaviour
     private bool pullInput;
     InputManager inputManager;
     private Vector3 cachedDir;
-    private PlayerMovement movement;
     public float pushForce;
     IPushable pushable;
 
@@ -30,7 +29,7 @@ public class PlayerPush : MonoBehaviour
     {
         _controller = GetComponent<CharacterController>();
         inputManager = GetComponent<InputManager>();
-        movement = GetComponent<PlayerMovement>();
+      
     }
 
     
@@ -38,7 +37,7 @@ public class PlayerPush : MonoBehaviour
     void Update()
     {
         
-        if (!movement.isGrounded)
+        if (!PlayerState.instance.isGrounded)
         {
             StopGrabbing();
             return;
@@ -95,7 +94,7 @@ public class PlayerPush : MonoBehaviour
                         
                         
                         
-                        movement.isPushing = true;
+                        PlayerState.instance.isPushing = true;
                         
                         if (Vector3.Dot(moveInput, cachedDir) >= 0.9)
                         {
@@ -146,17 +145,17 @@ public class PlayerPush : MonoBehaviour
         {
             isHolding = false;
         
-           movement.enabled = true;
+         
             return;
         }
         this.pushable = pushable;
-        movement.isPushing = true;
+        PlayerState.instance.isPushing = true;
         
     
         float yAngle = transform.eulerAngles.y;
 
         transform.rotation = Quaternion.LookRotation(cachedDir);
-        movement.LockCameraPosition = true;
+        //movement.LockCameraPosition = true;
         transform.forward = cachedDir;
         pushable.Initialize(transform);
 
@@ -169,8 +168,8 @@ public class PlayerPush : MonoBehaviour
         pushable.Cancel();
         pushable = null;
         isHolding = false;
-        movement.isPushing = false;
-        movement.LockCameraPosition = false;
+       PlayerState.instance.isPushing = false;
+       // movement.LockCameraPosition = false;
         cachedDir = Vector3.zero;
     }
 

@@ -12,7 +12,12 @@ public interface ISubstance
 {
     public SubstanceType SubstanceType { get; }
     
+    public Material _material { get; }
     public void Freeze();
+
+    public void Hover();
+    
+    public void UnHover();
 
     public void Melt();
 

@@ -64,6 +64,6 @@ public class InputManager : MonoBehaviour
     public bool IsUsingKeyboard()
     {
         Debug.Log($"Controller Type: {playerInput.currentControlScheme}");
-        return playerInput.currentControlScheme == "KeyboardMouse";
+        return playerInput.currentControlScheme == "Keyboard&Mouse";
     }
 }

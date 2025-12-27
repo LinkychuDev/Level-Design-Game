@@ -52,27 +52,7 @@
         [Tooltip("What layers the character uses as ground")]
         public LayerMask GroundLayers;
 
-        [Header("Cinemachine")]
-        [Tooltip("The follow target set in the Cinemachine Virtual Camera that the camera will follow")]
-        public GameObject CinemachineCameraTarget;
-
-        [Tooltip("How far in degrees can you move the camera up")]
-        public float TopClamp = 70.0f;
-
-        [Tooltip("How far in degrees can you move the camera down")]
-        public float BottomClamp = -30.0f;
-
-        [Tooltip("Additional degress to override the camera. Useful for fine tuning camera position when locked")]
-        public float CameraAngleOverride = 0.0f;
-
-        [Tooltip("For locking the camera position on all axis")]
-        public bool LockCameraPosition = false;
-
-        public float cameraSensitivity = 100f;
-
-        // cinemachine
-        private float _cinemachineTargetYaw;
-        private float _cinemachineTargetPitch;
+     
 
         // player
         private float _speed;
@@ -99,7 +79,7 @@
        
         private GameObject _mainCamera;
 
-        private const float _threshold = 0.01f;
+   
 
         private bool _hasAnimator;
         private InputManager _input;
@@ -114,8 +94,6 @@
 
         private Vector2 lookInput;
 
-        [SerializeField] private float mouseSensitivity = 100f;
-        [SerializeField] private float controllerSensitivity = 250f;
         private void Awake()
         {
             // get a reference to our main camera
@@ -131,7 +109,7 @@
 
         private void Start()
         {
-            _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
+            
             
             _hasAnimator = TryGetComponent(out _animator);
             _controller = GetComponent<CharacterController>();
@@ -157,18 +135,14 @@
 
         private void Update()
         {
-            if(isPushing)
+            if(PlayerState.instance.isPushing)
                 return;
             JumpAndGravity();
             GroundedCheck();
-            Look();
             Move();
         }
 
-        private void LateUpdate()
-        {
-            CameraRotation();
-        }
+    
 
         private void AssignAnimationIDs()
         {
@@ -186,6 +160,7 @@
                 transform.position.z);
             isGrounded = Physics.CheckSphere(spherePosition, GroundedRadius, GroundLayers,
                 QueryTriggerInteraction.Ignore);
+            PlayerState.instance.isGrounded = isGrounded;
 
             // update animator if using character
             if (_hasAnimator)
@@ -195,36 +170,8 @@
         }
 
 
-        void Look()
-        {
-          lookInput = _input.input.Player.Look.ReadValue<Vector2>();
-        }
+     
         
-
-        private void CameraRotation()
-        {
-
-           
-           
-            // if there is an input and camera position is not fixed
-            if (lookInput.sqrMagnitude >= _threshold && !LockCameraPosition)
-            {
-                //Don't multiply mouse input by Time.deltaTime;
-               // float deltaTimeMultiplier = !_input.IsUsingGamepad() ? 1.0f * mouseSensitivity : Time.deltaTime * controllerSpeed;
-               float deltaTimeMultiplier = _input.IsUsingKeyboard() ? 1.0f * mouseSensitivity : Time.deltaTime * controllerSensitivity;
-                _cinemachineTargetYaw += lookInput.x * deltaTimeMultiplier;
-                _cinemachineTargetPitch += lookInput.y * deltaTimeMultiplier;
-            }
-
-            // clamp our rotations so our values are limited 360 degrees
-            _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-            _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
-
-            // Cinemachine will follow this target
-            CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,
-                _cinemachineTargetYaw, 0.0f);
-        }
-
         private void Move()
         {
             // set target speed based on move speed, sprint speed and if sprint is pressed
@@ -368,12 +315,7 @@
             }
         }
 
-        private static float ClampAngle(float lfAngle, float lfMin, float lfMax)
-        {
-            if (lfAngle < -360f) lfAngle += 360f;
-            if (lfAngle > 360f) lfAngle -= 360f;
-            return Mathf.Clamp(lfAngle, lfMin, lfMax);
-        }
+     
         
         private void OnFootstep(AnimationEvent animationEvent)
         {

@@ -105,9 +105,9 @@ MonoBehaviour:
   uiBounds:
     serializedVersion: 2
     x: -90
-    y: -494
-    width: 1252
-    height: 1709
+    y: -492
+    width: 1244
+    height: 1706
 --- !u!114 &114350483966674976
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1445,7 +1445,7 @@ MonoBehaviour:
   m_Parent: {fileID: 114350483966674976}
   m_Children:
   - {fileID: 8926484042661614627}
-  m_UIPosition: {x: 738, y: 536}
+  m_UIPosition: {x: 705, y: 570}
   m_UICollapsed: 0
   m_UISuperCollapsed: 0
   m_InputSlots:

@@ -253,37 +253,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "Mouse With Right Button",
-                    "id": "229aa0b8-a29c-410d-9f6e-e2cc4b224293",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Look",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Modifier",
-                    "id": "7b070c37-faaa-4cad-bd59-1f0c8eab74b7",
-                    "path": "<Mouse>/rightButton",
+                    "name": "",
+                    "id": "6df0adf9-aa6c-4b28-9a79-15bb22d0c173",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard&Mouse",
                     "action": "Look",
                     "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Binding",
-                    "id": "2e8b170c-b013-4bac-97d0-1950119f43ef",
-                    "path": "<Pointer>/delta",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Look",
-                    "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 },
                 {
                     "name": "",
