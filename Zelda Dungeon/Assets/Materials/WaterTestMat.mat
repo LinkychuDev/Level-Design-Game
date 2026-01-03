@@ -38,7 +38,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 10309, guid: 0000000000000000f000000000000000, type: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -61,8 +61,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _IceSubGraph_da90d7c8551a43c3a936e0a91fdb6a71_BaseMap_3498146328_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _IceTexture:
-        m_Texture: {fileID: 2800000, guid: ca073665fd46514439aca99586f87624, type: 3}
+        m_Texture: {fileID: 2800000, guid: bcc3bc348847e6b42999b83eb515a47c, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
@@ -115,14 +119,16 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _FireFresnelStrength: 2
-    - _FireTimer: 0.8
+    - _FireTimer: 0.45
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HighlightedFresnel: 1.49
-    - _IceAlpha: 0.9
-    - _IceFresnelAmount: 0.66
-    - _IceFresnelStrength: 1.6
+    - _HighlightedFresnel: 11.2
+    - _IceAlpha: 1
+    - _IceBlend: 1
+    - _IceFresnelAmount: 0.07
+    - _IceFresnelStrength: 1.36
+    - _IceOpacity: 1
     - _IsFrozen: 0
     - _IsHovered: 0
     - _IsOnFire: 0
@@ -142,19 +148,19 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 0.38474548, g: 0.46558785, b: 0.6226415, a: 1}
+    - _BaseColor: {r: 0.59233713, g: 0.6858444, b: 0.8207547, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FireColour: {r: 0.38453686, g: 0.3329477, b: 0.8113208, a: 1}
     - _FireFresnelColour: {r: 1.6603774, g: 0.7200401, b: 0.19579919, a: 1}
     - _HighlightedColourFire: {r: 1.493261, g: 0.3076766, b: 0.2394851, a: 1}
-    - _HighlightedColourIce: {r: 0.4392156, g: 1.108189, b: 1.678431, a: 1}
+    - _HighlightedColourIce: {r: 0.7140724, g: 1.2130463, b: 1.627778, a: 1}
     - _HoveredColour: {r: 1.644205, g: 1.556492, b: 0.5916477, a: 1}
-    - _IceColour: {r: 0.375445, g: 0.51798415, b: 0.5566038, a: 1}
-    - _IceFresnelColour: {r: 0.20825918, g: 0.369409, b: 0.98113203, a: 1}
-    - _IceUVScale: {r: 1, g: 0.5, b: 0, a: 0}
-    - _IceUVs: {r: 0, g: 0, b: 0, a: 0}
+    - _IceColour: {r: 0.23780705, g: 0.2873232, b: 0.3018868, a: 1}
+    - _IceFresnelColour: {r: 3.8916042, g: 6.317547, b: 8.333536, a: 1}
+    - _IceUVScale: {r: 1, g: 1, b: 0, a: 0}
+    - _IceUVs: {r: 1, g: 1, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1

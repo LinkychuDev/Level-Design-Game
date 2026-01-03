@@ -14,7 +14,7 @@ public class PlayerAbilities : MonoBehaviour
     
     InputManager inputManager => GetComponent<InputManager>();
 
-    
+    public GameObject canvas;
     public float maxRayDistance = 50f;
     //public Transform secondCamera;
 
@@ -34,11 +34,26 @@ public class PlayerAbilities : MonoBehaviour
     [SerializeField] private GameObject iceImage;
     [SerializeField] private GameObject fireImage;
    // public bool isUsingAbility;
+   [SerializeField] private bool isUnlocked;
+   private Transform imageCanvasParent;
 
    private void Start()
    {
+       canvas.SetActive(false);
+       imageCanvasParent = fireImage != null ? fireImage.transform.parent : iceImage.transform.parent;
        //detectionSphere.gameObject.SetActive(false);
-      SetImage(currentAbility);
+
+       if (isUnlocked)
+       {
+          OnUnlockedAbility();
+           
+       }
+
+       else
+       {
+           HideImages();    
+       }
+       
    }
 
    private void OnEnable()
@@ -47,11 +62,20 @@ public class PlayerAbilities : MonoBehaviour
         inputManager.input.Ability.SelectAbility1.performed += OnIceSelected;
         inputManager.input.Ability.SelectAbility2.performed += OnFireSelected;
         inputManager.input.Ability.Perform.performed += OnAbilityPerformed;
-       
+        GameEventsManager.instance.UnlockedFireAndIce += OnUnlockedAbility;
+
+    }
+
+    void OnUnlockedAbility()
+    {
+        SetImage(currentAbility);
+        isUnlocked = true;
     }
 
     private void OnAbilitySelected(InputAction.CallbackContext ctx)
     {
+        if (!isUnlocked)
+            return;
         Debug.Log("Ability Selected");
         float inputValue = ctx.ReadValue<float>();
 
@@ -74,11 +98,15 @@ public class PlayerAbilities : MonoBehaviour
     }
     private void OnAbilityPerformed(InputAction.CallbackContext obj)
     {
+        if (!isUnlocked)
+            return;
         isUsing = !isUsing;
         if (isUsing)
         {
             abilityUsed = true;
         }
+        
+        canvas.SetActive(isUsing);
     }
 
     private void OnDisable()
@@ -87,12 +115,14 @@ public class PlayerAbilities : MonoBehaviour
         inputManager.input.Ability.SelectAbility1.performed -= OnIceSelected;
         inputManager.input.Ability.SelectAbility2.performed -= OnFireSelected;
         inputManager.input.Ability.Perform.performed -= OnAbilityPerformed;
+        GameEventsManager.instance.UnlockedFireAndIce -= OnUnlockedAbility;
        
     }
     
     private void OnIceSelected(InputAction.CallbackContext ctx)
     {
-       
+        if (!isUnlocked)
+            return;
         currentAbility = AbilityType.Ice;
         SetImage(currentAbility);
 
@@ -100,6 +130,8 @@ public class PlayerAbilities : MonoBehaviour
 
     private void OnFireSelected(InputAction.CallbackContext ctx)
     {
+        if (!isUnlocked)
+            return;
         currentAbility = AbilityType.Fire;
         SetImage(currentAbility);
        
@@ -109,6 +141,8 @@ public class PlayerAbilities : MonoBehaviour
 
     private void Update()
     {
+        if (!isUnlocked)
+            return;
         if (abilityUsed)
         {
 
@@ -149,7 +183,7 @@ public class PlayerAbilities : MonoBehaviour
                         block.Hover();  
                         if (inputManager.input.Ability.Use.IsPressed())
                         {
-                            UseObject(block._material);
+                            UseObject(block, hit.transform.tag);
                         }
 
                     }
@@ -189,23 +223,47 @@ public class PlayerAbilities : MonoBehaviour
         }
     }
 
-    void UseObject(Material material)
+    void UseObject(ISubstance substance, string label)
     {
+        if (!isUnlocked)
+            return;
+        Material[] materials = substance._materials;
         if (currentAbility == AbilityType.Fire)
         {
                            
             //melt ice
             if (block.SubstanceType == SubstanceType.Frozen)
             {
-                material.SetFloat("_IsFrozen", 0);
-                material.SetFloat("_IsOnFire", 0);
+
+
+                foreach (var material in materials)
+                {
+                    material.SetFloat("_IsFrozen", 0);
+                    material.SetFloat("_IsOnFire", 0);
+                }
                 block.Melt();
             }
             else
             {
-                material.SetFloat("_IsFrozen", 0);
-                material.SetFloat("_IsOnFire", 1);
-                block.Ignite();
+                if (label == "Water")
+                {
+                    foreach (var material in materials)
+                    {
+                        material.SetFloat("_IsFrozen", 0);
+                    }
+                    block.Ignite();
+                }
+
+                else
+                {
+                    foreach (var material in materials)
+                    {
+                        material.SetFloat("_IsFrozen", 0);
+                        material.SetFloat("_IsOnFire", 1);
+                    }
+                    block.Ignite();
+                }
+                
             }
 
                            
@@ -216,15 +274,21 @@ public class PlayerAbilities : MonoBehaviour
             //make steam
             if (block.SubstanceType == SubstanceType.Burning)
             {
-                material.SetFloat("_IsFrozen", 0);
-                material.SetFloat("_IsOnFire", 0);
+                foreach (var material in materials)
+                {
+                    material.SetFloat("_IsFrozen", 0);
+                    material.SetFloat("_IsOnFire", 0);
+                }
                 block.Steam();
             }
             
             else
             {
-                material.SetFloat("_IsOnFire", 0);
-                material.SetFloat("_IsFrozen", 1);
+                foreach (Material material in materials)
+                {
+                    material.SetFloat("_IsOnFire", 0);
+                    material.SetFloat("_IsFrozen", 1);
+                }
                 block.Freeze();
             }
                             
@@ -235,6 +299,11 @@ public class PlayerAbilities : MonoBehaviour
 
     void SetImage(AbilityType abilityType)
     {
+        if (!imageCanvasParent.gameObject.activeSelf)
+        {
+            imageCanvasParent.gameObject.SetActive(true);
+        }
+        
         switch (abilityType)
         {
             case AbilityType.Fire:
@@ -246,6 +315,11 @@ public class PlayerAbilities : MonoBehaviour
                 fireImage.SetActive(false);
                 break;
         }
+    }
+
+    void HideImages()
+    {
+       imageCanvasParent.gameObject.SetActive(false);
     }
 
     void CancelAbility()
@@ -270,6 +344,7 @@ public class PlayerAbilities : MonoBehaviour
         PlayerState.instance.PlayerAimEvent(false);
         hasCameraBeenSet = false;
         isUsing = false;
+        canvas.SetActive(false);
         abilityUsed = false;
        // detectionSphere.blocks.Clear();
        // detectionSphere.renderers.Clear();

@@ -104,7 +104,7 @@ public class PlayerCameraController : MonoBehaviour
         {
             //Don't multiply mouse input by Time.deltaTime;
             // float deltaTimeMultiplier = !_input.IsUsingGamepad() ? 1.0f * mouseSensitivity : Time.deltaTime * controllerSpeed;
-            float deltaTimeMultiplier = _input.IsUsingKeyboard() ? 1.0f * mouseSensitivity * sensitivity : Time.deltaTime * controllerSensitivity * sensitivity;
+            float deltaTimeMultiplier = _input.IsUsingKeyboard() ? 1.0f * mouseSensitivity * sensitivity * Time.deltaTime : Time.deltaTime * controllerSensitivity * sensitivity;
             _cinemachineTargetYaw += lookInput.x * deltaTimeMultiplier;
            // Debug.Log("Cinemachine Yaw: " + _cinemachineTargetYaw);
             _cinemachineTargetPitch += lookInput.y * deltaTimeMultiplier;

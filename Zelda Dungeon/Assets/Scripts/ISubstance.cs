@@ -12,7 +12,8 @@ public interface ISubstance
 {
     public SubstanceType SubstanceType { get; }
     
-    public Material _material { get; }
+    
+    public Material[] _materials { get; }
     public void Freeze();
 
     public void Hover();

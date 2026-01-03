@@ -3,7 +3,8 @@ using UnityEngine;
 public class SystemicBlock : MonoBehaviour, ISubstance
 {
     public SubstanceType SubstanceType { get;  private set; }
-    public Material Material { get; }
+
+    public Material[] _materials { get; private set; }
 
 
     public SubstanceType substanceTypeReference;
@@ -11,7 +12,7 @@ public class SystemicBlock : MonoBehaviour, ISubstance
     Renderer _renderer;
     public GameObject smokeVFX;
 
-    public Material _material { get; private set; }
+   
     //freeze
     
     //fire hit then melt
@@ -28,7 +29,9 @@ public class SystemicBlock : MonoBehaviour, ISubstance
     {
         _renderer = GetComponent<Renderer>();
         
-        _material = _renderer.material;
+        _materials = _renderer.materials;
+        
+     
     }
 
     // Update is called once per frame
@@ -40,12 +43,18 @@ public class SystemicBlock : MonoBehaviour, ISubstance
     
     public void Hover()
     {
-       _material.SetFloat("_IsHovered", 1);
+       foreach (var _material in _materials)
+       {
+          _material.SetFloat("_IsHovered", 1);
+       }
     }
 
     public void UnHover()
     {
-       _material.SetFloat("_IsHovered", 0);
+       foreach (var _material in _materials)
+       {
+          _material.SetFloat("_IsHovered", 0);
+       }
     }
 
     public void Highlight(AbilityType abilityType)
@@ -53,22 +62,31 @@ public class SystemicBlock : MonoBehaviour, ISubstance
         // _renderer.material. 
         if (abilityType == AbilityType.Ice)
         {
-           _material.SetFloat("_IsHighlightedIce", 1f);
-           _material.SetFloat("_IsHighlightedFire", 0f);
+           foreach (var _material in _materials)
+           {
+              _material.SetFloat("_IsHighlightedIce", 1f);
+              _material.SetFloat("_IsHighlightedFire", 0f);
+           }
         }
 
         else
         {
-           _material.SetFloat("_IsHighlightedIce", 0f);
-           _material.SetFloat("_IsHighlightedFire", 1f);
+           foreach (var _material in _materials)
+           {
+              _material.SetFloat("_IsHighlightedIce", 0f);
+              _material.SetFloat("_IsHighlightedFire", 1f);
+           }
         }
         
     }
 
     public void DeHighlight()
     {
-       _material.SetFloat("_IsHighlightedIce", 0f);
-       _material.SetFloat("_IsHighlightedFire", 0f);
+       foreach (var _material in _materials)
+       {
+          _material.SetFloat("_IsHighlightedIce", 0f);
+          _material.SetFloat("_IsHighlightedFire", 0f);
+       }
     }
    
   

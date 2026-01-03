@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] private Vector2 outOfBoundsMin;
     [SerializeField] private Vector2 outOfBoundsMax;
+    
     private void Awake()
     {
         instance = this;
