@@ -1,13 +1,14 @@
 using UnityEngine;
 
-public class PowerUpTest : MonoBehaviour, IInteractable
+public class PowerUpTest : BaseInteractable
 {
-    
-
-    public void Interact()
+  
+    public DialogueBasic dialogueBasic;
+    public override void OnInteract()
     {
-        if(GameEventsManager.instance.hasUnlockedFireAndIce)
-            return;
-        GameEventsManager.instance.UnlockedFireAndIceEvent();
+        DialogueManager.instance.DisplayDialogue(dialogueBasic);
+        canInteract = false;
     }
+
+    
 }

@@ -9,14 +9,20 @@ public class GameEventsManager : MonoBehaviour
 
     public bool hasUnlockedFireAndIce;
 
+    public GameObject mapObject;
     public event Action UnlockedFireAndIce;
 
     void Awake()
     {
         instance = this;
+        mapObject.SetActive(false);
         DontDestroyOnLoad(this);
     }
 
+    public void UnlockedMap()
+    {
+        mapObject.SetActive(true);
+    }
 
     public void UnlockedFireAndIceEvent()
     {

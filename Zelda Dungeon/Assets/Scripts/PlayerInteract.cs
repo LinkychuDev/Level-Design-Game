@@ -5,12 +5,13 @@ using UnityEngine;
 public interface IInteractable
 {
     public void Interact();
+    public bool CanInteract{get;set;}
 }
 public class PlayerInteract : MonoBehaviour
 {
     [SerializeField] private bool showInteractRay = true;
     public float interactDistance;
-    private InputManager inputManager => GetComponent<InputManager>();
+    private InputManager inputManager => InputManager.instance;
     public GameObject interactRay;
 
     public float desiredYHintPos = 2.5f;
@@ -30,15 +31,23 @@ public class PlayerInteract : MonoBehaviour
     {
         if (Physics.Raycast(transform.position, transform.forward, out RaycastHit hit, interactDistance))
         {
-            if (hit.transform.TryGetComponent(out IInteractable interactable))
+            if (hit.transform.TryGetComponent(out BaseInteractable interactable))
             {
-                interactRay.transform.position = hit.transform.position + (Vector3.up * desiredYHintPos) ;
-                interactRay.SetActive(true);
-                if (inputManager.input.Player.Interact.IsPressed())
+                if (interactable.canInteract)
                 {
-                    interactable.Interact();
+                    interactRay.transform.position = hit.transform.position + (Vector3.up * desiredYHintPos) ;
+                    interactRay.SetActive(true);
+                    if (inputManager.input.Player.Interact.IsPressed())
+                    {
+                        interactable.OnInteract();
+                    }
+
                 }
-                
+                else
+                {
+                    interactRay.SetActive(false);
+                }
+             
             }
 
             else

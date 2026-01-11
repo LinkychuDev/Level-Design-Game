@@ -18,28 +18,6 @@ public class DetectionSphere : MonoBehaviour
         
 
     }
-    
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.TryGetComponent(out SystemicBlock substance))
-        {
-            if(blocks.Contains(substance))
-                return;
-            substance.Highlight(currentAbility);
-            blocks.Add(substance);
-        }
-    }
 
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.gameObject.TryGetComponent(out SystemicBlock substance))
-        {
-            if (!blocks.Contains(substance))
-                return;
-            substance.DeHighlight();
-            blocks.Remove(substance);
-        }
-        
-    }
-    
+   
 }

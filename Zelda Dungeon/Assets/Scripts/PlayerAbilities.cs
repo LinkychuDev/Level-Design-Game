@@ -12,17 +12,19 @@ public class PlayerAbilities : MonoBehaviour
 {
     public AbilityType currentAbility;
     
-    InputManager inputManager => GetComponent<InputManager>();
+    InputManager inputManager => InputManager.instance;
 
     public GameObject canvas;
     public float maxRayDistance = 50f;
+    public float visualRayDistance = 50f;
     //public Transform secondCamera;
 
 
     //[SerializeField] private DetectionSphere detectionSphere;
-    private ISubstance block;
+    private SystemicClass block;
    
     public LayerMask layerMask;
+    
     public Animator cameraAnimator;
 
     private bool isUsing;
@@ -37,8 +39,33 @@ public class PlayerAbilities : MonoBehaviour
    [SerializeField] private bool isUnlocked;
    private Transform imageCanvasParent;
 
+   private Collider[] detectedColliders;
+   private Collider[] lastDetectedColliders;
+   [SerializeField] private int maxColliders = 15;
+
+
+   [Header("Colour")] 
+   [ColorUsage(true, false)][SerializeField] private Color HighlightedColourIceBase;
+   [ColorUsage(true, false)][SerializeField] private Color HighlightedColourFireBase;
+   [ColorUsage(true, true)][SerializeField] private Color HighlightedColourIce;
+   [ColorUsage(true, true)][SerializeField] private Color HighlightedColourFire;
+   [ColorUsage(false, true)] [SerializeField] private Color HoveredColour;
+   [ColorUsage(true, false)][SerializeField] private Color HoveredColourBase;
+
+   private void Awake()
+   {
+       
+   }
+
    private void Start()
    {
+       Shader.SetGlobalColor("_HighlightedColourIceBase",  HighlightedColourIceBase);
+       Shader.SetGlobalColor("_HighlightedColourFireBase", HighlightedColourFireBase);
+       Shader.SetGlobalColor("_HighlightedColourIce",  HighlightedColourIce);
+       Shader.SetGlobalColor("_HighlightedColourFire", HighlightedColourFire);
+       Shader.SetGlobalColor("_HoveredColour", HoveredColour);
+       Shader.SetGlobalColor("_HoveredColourBase", HoveredColourBase);
+       detectedColliders = new Collider[maxColliders]; 
        canvas.SetActive(false);
        imageCanvasParent = fireImage != null ? fireImage.transform.parent : iceImage.transform.parent;
        //detectionSphere.gameObject.SetActive(false);
@@ -116,6 +143,7 @@ public class PlayerAbilities : MonoBehaviour
         inputManager.input.Ability.SelectAbility2.performed -= OnFireSelected;
         inputManager.input.Ability.Perform.performed -= OnAbilityPerformed;
         GameEventsManager.instance.UnlockedFireAndIce -= OnUnlockedAbility;
+        Shader.SetGlobalFloat("_EnvironmentState", 0);
        
     }
     
@@ -159,12 +187,14 @@ public class PlayerAbilities : MonoBehaviour
                 }
 
                 Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+                
 
                 RaycastHit hit;
 
                 // detectionSphere.Init(maxRayDistance, currentAbility);
                 // detectionSphere.gameObject.SetActive(true);
 
+                CheckOverlapSphere();
 
                // Shader.SetGlobalFloat("_EnvironmentState", (float)currentAbility);
                 //  Debug.DrawRay(ray.origin, ray.direction * maxRayDistance, Color.red);
@@ -175,7 +205,7 @@ public class PlayerAbilities : MonoBehaviour
                 {
                     //Highlight Object
                     Debug.Log(hit.transform.name);
-                    if (hit.collider.TryGetComponent(out ISubstance block))
+                    if (hit.collider.TryGetComponent(out SystemicClass block))
                     {
                         this.block = block;
                         //var material = this.block.GetComponent<Renderer>().material;
@@ -223,7 +253,7 @@ public class PlayerAbilities : MonoBehaviour
         }
     }
 
-    void UseObject(ISubstance substance, string label)
+    void UseObject(SystemicClass substance, string label)
     {
         if (!isUnlocked)
             return;
@@ -337,9 +367,26 @@ public class PlayerAbilities : MonoBehaviour
         {
             block.UnHover();
         }
+
+        int numberOfCols = Physics.OverlapSphereNonAlloc(transform.position, visualRayDistance, detectedColliders,  ~layerMask);
+        for (var index = 0; index < numberOfCols; index++)
+        {
+            if (detectedColliders[index].TryGetComponent(out Renderer renderer))
+            {
+                foreach (Material material in renderer.materials)
+                {
+                    material.SetFloat("_EnvironmentState", 0);
+                    material.SetFloat("__IsSystemic", 0);
+                }
+            }
             
+            
+            
+        }
+
         this.block = null;
-        //Shader.SetGlobalFloat("_EnvironmentState", 0);
+        
+       // Shader.SetGlobalFloat("_EnvironmentState", 0);
         cameraAnimator.Play("Third Person");
         PlayerState.instance.PlayerAimEvent(false);
         hasCameraBeenSet = false;
@@ -352,5 +399,43 @@ public class PlayerAbilities : MonoBehaviour
        // currentAbility = AbilityType.None;
        // inputManager.playerInput.SwitchCurrentActionMap("Player");
     }
-    
+
+    void CheckOverlapSphere()
+    {
+        int numberOfCols = Physics.OverlapSphereNonAlloc(transform.position, visualRayDistance, detectedColliders,   ~layerMask);
+        
+        
+        Debug.Log(numberOfCols);
+        if(numberOfCols <= 0)
+            Debug.LogError("Overlap Sphere Not Found");
+        for (int i = 0 ; i< numberOfCols; i++)
+        {
+            if (detectedColliders[i].TryGetComponent(out Renderer renderer))
+            {
+                foreach (Material material in renderer.materials)
+                {
+                    if (detectedColliders[i].TryGetComponent(out SystemicClass substance))
+                    {
+                        material.SetFloat("_IsSystemic", 1);
+                    }
+
+                    material.SetFloat("_EnvironmentState", (int)currentAbility);
+
+                }
+            }
+
+        }
+        
+        
+        lastDetectedColliders =  detectedColliders;
+        
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, visualRayDistance);
+        Gizmos.color = Color.aquamarine;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * maxRayDistance);
+    }
 }

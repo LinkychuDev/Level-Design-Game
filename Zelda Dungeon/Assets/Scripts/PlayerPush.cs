@@ -28,7 +28,7 @@ public class PlayerPush : MonoBehaviour
     void Start()
     {
         _controller = GetComponent<CharacterController>();
-        inputManager = GetComponent<InputManager>();
+        inputManager = InputManager.instance;
       
     }
 

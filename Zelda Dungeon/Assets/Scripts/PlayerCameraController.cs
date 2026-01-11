@@ -45,7 +45,7 @@ public class PlayerCameraController : MonoBehaviour
        
         UpdateCinemachineReference(false);
         UpdateYaw();
-        _input = GetComponent<InputManager>();
+        _input = InputManager.instance;
     }
 
 

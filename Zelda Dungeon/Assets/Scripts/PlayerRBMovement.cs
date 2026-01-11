@@ -20,6 +20,7 @@ public class PlayerRBMovement : MonoBehaviour
     [SerializeField] private float airSpeed = 0.5f;
     [FormerlySerializedAs("jumpTimer")] [SerializeField] private float longJumpTimer = 1f;
     private float jumpDuration = 0f;
+    [SerializeField] private float terminalYVelocity = 6f;
     [SerializeField] private float jumpForce;
     
     [Header("Ground Detection")]
@@ -29,16 +30,27 @@ public class PlayerRBMovement : MonoBehaviour
     [SerializeField] private float airDrag = 0.6f;
     [SerializeField] private LayerMask groundLayer;
 
-    [SerializeField] private float groundDistance = 1.1f;
+    [SerializeField] private Transform groundCheck;
 
     [SerializeField] private float groundRadius = 0.4f;
 
     private Transform cameraOrientation;
+    
+    // animation IDs
+    int _animIDSpeed = Animator.StringToHash("Speed");
+    int _animIDGrounded = Animator.StringToHash("Grounded");
+    int _animIDJump = Animator.StringToHash("Jump");
+    int _animIDFreeFall = Animator.StringToHash("FreeFall");
+    int _animIDMotionSpeed = Animator.StringToHash("MotionSpeed");
 
+    private Animator animator;
     bool isJumping = false;
+
+    private Vector3 moveInput;
+    private Vector3 moveDir;
     private void Awake()
     {
-        inputManager = GetComponent<InputManager>();
+        inputManager = InputManager.instance;
         rb = GetComponent<Rigidbody>();
         moveSpeed = walkSpeed;
     }
@@ -55,14 +67,49 @@ public class PlayerRBMovement : MonoBehaviour
     void Start()
     {
         cameraOrientation = Camera.main.transform;
+        animator = GetComponent<Animator>();
        
     }
 
 
+  
     private void Update()
     {
-        //JumpSpecialCheck();
+        int direction = 0;
+        animator.SetBool(_animIDGrounded, isGrounded);
+        animator.SetBool(_animIDJump, isJumping);
         
+        if (isGrounded)
+        {
+            
+            animator.SetBool(_animIDFreeFall, false);
+        }
+
+        else
+        {
+            if (Mathf.Abs(rb.linearVelocity.y) > terminalYVelocity)
+            {
+                animator.SetBool(_animIDFreeFall, true);
+            }
+        }
+
+        if (moveInput.magnitude > 0.01f)
+        {
+            direction = 1;
+        }
+        
+        animator.SetFloat(_animIDSpeed, moveSpeed * direction, 0.1f, Time.deltaTime);
+        animator.SetFloat(_animIDMotionSpeed, moveInput.magnitude, 0.1f, Time.deltaTime);
+        
+        
+    }
+
+    private void LateUpdate()
+    {
+        if (isGrounded)
+        {
+            PlayerState.instance.UpdateLastGroundedPosition(this.transform.position);
+        }
     }
 
     // Update is called once per frame
@@ -77,7 +124,7 @@ public class PlayerRBMovement : MonoBehaviour
 
     void GroundCheck()
     {
-        isGrounded = Physics.CheckSphere(transform.position - new Vector3(0, groundDistance, 0), groundRadius,
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundRadius,
             groundLayer);
         PlayerState.instance.isGrounded = isGrounded;
     }
@@ -97,7 +144,7 @@ public class PlayerRBMovement : MonoBehaviour
 
     void MoveInput()
     {
-        Vector2 moveInput = inputManager.input.Player.Move.ReadValue<Vector2>();
+        moveInput = inputManager.input.Player.Move.ReadValue<Vector2>();
 
         if (inputManager.input.Player.Sprint.IsPressed())
         {
@@ -122,7 +169,7 @@ public class PlayerRBMovement : MonoBehaviour
 
 
        
-        Vector3 moveDir = cameraForward * moveInput.y + cameraRight * moveInput.x;
+        moveDir = cameraForward * moveInput.y + cameraRight * moveInput.x;
         
         if (moveDir != Vector3.zero)
         {
@@ -152,6 +199,26 @@ public class PlayerRBMovement : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawSphere(transform.position - new Vector3(0, groundDistance, 0), groundRadius);    
+        Gizmos.DrawSphere(groundCheck.position, groundRadius);    
+    }
+    
+    private void OnFootstep(AnimationEvent animationEvent)
+    {
+        /*if (animationEvent.animatorClipInfo.weight > 0.5f)
+        {
+            if (FootstepAudioClips.Length > 0)
+            {
+                var index = Random.Range(0, FootstepAudioClips.Length);
+                AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+            }
+        }*/
+    }
+
+    private void OnLand(AnimationEvent animationEvent)
+    {
+        /*if (animationEvent.animatorClipInfo.weight > 0.5f)
+        {
+            AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+        }*/
     }
 }

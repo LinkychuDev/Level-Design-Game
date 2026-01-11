@@ -82,7 +82,7 @@
    
 
         private bool _hasAnimator;
-        private InputManager _input;
+        private InputManager _input = InputManager.instance;
 
         public bool isGrounded;
         private bool isSprinting;

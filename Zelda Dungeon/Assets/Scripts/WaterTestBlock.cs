@@ -1,28 +1,21 @@
-using Unity.VisualScripting;
+using System.Collections;
 using UnityEngine;
 
-public class WaterTestBlock : MonoBehaviour, ISubstance
+public class WaterTestBlock : SystemicClass
 {
-    public SubstanceType SubstanceType { get; private set; } = SubstanceType.Wet;
+    
     public string Tag { get; }
-    public Material[] _materials { get; private set; }
-
+    
     public bool isWaterFallConnected;
     
     private Collider[] waterColliders;
     
-  
-  
-    public GameObject bubblePrefab;
-    private int objectLayer => gameObject.layer;
-
-
     Renderer waterRenderer;
-  
     
+    public override MaterialType materialType => MaterialType.Water;
     private Collider waterCollider;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Initialise()
     {
         waterRenderer = GetComponent<Renderer>();
         _materials = waterRenderer.materials;
@@ -33,13 +26,9 @@ public class WaterTestBlock : MonoBehaviour, ISubstance
     }
 
     // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-
-    void OnTriggerEnter(Collider other)
+   
+    
+    public override void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
@@ -55,68 +44,53 @@ public class WaterTestBlock : MonoBehaviour, ISubstance
         }
 
     }
+    
+    public override void Default()
+    {
+        SubstanceType = SubstanceType.Wet;
+        gameObject.layer = originalLayer;
+        ClearEffects();
+        SetTriggers(true);
+    }
   
-    public void Freeze()
+    public override void Freeze()
     {
         // throw new System.NotImplementedException();
        // waterRenderer.ma
-
-      
-        bubblePrefab.SetActive(false);
-        SubstanceType = SubstanceType.Frozen;
-        gameObject.layer = LayerMask.NameToLayer("Ice");
-        
+        Default();
+        base.Freeze();
         SetTriggers(false); 
         
        
         //smokeVFX.SetActive(false);
     }
+    
 
-    public void Hover()
-    {
-       // _material.SetFloat("_IsHovered", 1);
-        foreach (var wm in _materials)
-        {
-            wm.SetFloat("_IsHovered", 1);
-        }
-    }
-
-    public void UnHover()
-    {
-        //_material.SetFloat("_IsHovered", 0);
-        foreach (var wm in _materials)
-        {
-            wm.SetFloat("_IsHovered", 0);
-        }
-    }
-
-    public void Melt()
-    {
-        bubblePrefab.SetActive(false);
-        gameObject.layer = objectLayer;
-        SubstanceType = SubstanceType.Wet;
-        gameObject.layer = objectLayer;
-        SetTriggers(true);
-        //smokeVFX.SetActive(false);
-        // throw new System.NotImplementedException();
-    }
-
-    public void Steam()
-    {
-        bubblePrefab.SetActive(true);
-        gameObject.layer = objectLayer;
-        SubstanceType = SubstanceType.Wet;
-        SetTriggers(true);
-       // smokeVFX.SetActive(true);
-        // throw new System.NotImplementedException();
-    }
-
-    public void Ignite()
+    public override void Ignite()
     {
         Steam();
        //bubblePrefab.SetActive(true);
        // smokeVFX.SetActive(false);
         // throw new System.NotImplementedException();
     }
-    
+
+    public override void Melt()
+    {
+        Default();
+    }
+
+    public override void ClearEffects()
+    {
+        smokeVFX.SetActive(false);
+    }
+
+    public override IEnumerator SmokeCoroutine()
+    {
+        gameObject.layer = LayerMask.NameToLayer("Default");  
+        SubstanceType = SubstanceType.Smoke;
+        ClearEffects();
+        smokeVFX.SetActive(true);
+        yield return new WaitForSeconds(waterEffectDuration);
+        Default();
+    }
 }
