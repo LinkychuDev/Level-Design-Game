@@ -28,8 +28,8 @@ public class WeighingScale : MonoBehaviour
    public ScaleBalance scaleBalance;
     
    public bool shouldActivateInitial;
-    public UnityEvent OnScaleRight, OnScaleLeft, OnScaleBalance;
-    private void Awake()
+    public UnityEvent OnScaleRight = new UnityEvent(), OnScaleLeft = new UnityEvent(), OnScaleBalance = new UnityEvent();
+    private void Start()
     {
        SetPosition();
 
@@ -54,7 +54,7 @@ public class WeighingScale : MonoBehaviour
             scale2.transform.position = ImbalanceScale2UpPos;
             if (shouldActivateInitial)
             {
-                OnScaleLeft.Invoke();
+                OnScaleLeft?.Invoke();
             }
          
             scaleBalance = ScaleBalance.Left;
@@ -68,7 +68,7 @@ public class WeighingScale : MonoBehaviour
             scale2.transform.position = ImbalanceScale2DownPos;
             if (shouldActivateInitial)
             {
-                OnScaleRight.Invoke();
+                OnScaleRight?.Invoke();
             }
             scaleBalance = ScaleBalance.Right;
          
@@ -81,7 +81,7 @@ public class WeighingScale : MonoBehaviour
             scale2.transform.position = BalanceScale2Pos;
             if (shouldActivateInitial)
             {
-                OnScaleBalance.Invoke();
+                OnScaleBalance?.Invoke();
             }
             
             scaleBalance = ScaleBalance.Balance;
@@ -150,17 +150,6 @@ public class WeighingScale : MonoBehaviour
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     
 }

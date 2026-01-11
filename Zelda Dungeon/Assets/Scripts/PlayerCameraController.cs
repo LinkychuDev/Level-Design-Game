@@ -15,8 +15,12 @@ public class PlayerCameraController : MonoBehaviour
     public GameObject CinemachineCameraTargetAim;
 
     [Tooltip("How far in degrees can you move the camera up")]
+
+    private float _topClamp;
     public float TopClamp = 70.0f;
 
+    public float TopClampAim = 80.0f;
+    
     [Tooltip("How far in degrees can you move the camera down")]
     public float BottomClamp = -30.0f;
 
@@ -65,10 +69,12 @@ public class PlayerCameraController : MonoBehaviour
         if (isAiming)
         {
             sensitivity = aimSensitivity;
+            _topClamp = TopClampAim;
         }
         else
         {
             sensitivity = 1;
+            _topClamp = TopClamp;
         }
         /*
         if (isAiming)
@@ -113,7 +119,7 @@ public class PlayerCameraController : MonoBehaviour
 
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
+        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, _topClamp);
 
         // Cinemachine will follow this target
         CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,

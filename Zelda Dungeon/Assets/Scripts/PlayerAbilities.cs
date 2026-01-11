@@ -186,7 +186,7 @@ public class PlayerAbilities : MonoBehaviour
                     hasCameraBeenSet = true;
                 }
 
-                Ray ray = Camera.main.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width/2, Screen.height/2, 0));
                 
 
                 RaycastHit hit;
@@ -436,6 +436,7 @@ public class PlayerAbilities : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, visualRayDistance);
         Gizmos.color = Color.aquamarine;
-        Gizmos.DrawLine(transform.position, transform.position + transform.forward * maxRayDistance);
+        Gizmos.DrawLine(Camera.main.transform.position, Camera.main.transform.position + Camera.main.transform.forward * maxRayDistance);
+       
     }
 }

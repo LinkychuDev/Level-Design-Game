@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class PlayerPush : MonoBehaviour
 {
-    CharacterController _controller;
+    private Rigidbody _controller;
     public float pushDistance = 0.3f;
     public Transform pushPoint;
     private bool isHolding;
@@ -15,6 +15,7 @@ public class PlayerPush : MonoBehaviour
     public float pushForce;
     IPushable pushable;
 
+    public LayerMask layerMask;
     private Vector3[] CardinalDirections =  new Vector3[]
     {
         Vector3.forward, 
@@ -27,14 +28,14 @@ public class PlayerPush : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _controller = GetComponent<CharacterController>();
+        _controller = GetComponent<Rigidbody>();
         inputManager = InputManager.instance;
       
     }
 
     
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         
         if (!PlayerState.instance.isGrounded)
@@ -45,7 +46,7 @@ public class PlayerPush : MonoBehaviour
         pushInput = (inputManager.input.Player.Push.IsPressed());
 
        
-            if (Physics.Raycast(pushPoint.position, transform.forward, out RaycastHit hit, pushDistance))
+            if (Physics.Raycast(pushPoint.position, transform.forward, out RaycastHit hit, pushDistance, ~layerMask))
             {
                 
                 if (!isHolding)
@@ -99,13 +100,13 @@ public class PlayerPush : MonoBehaviour
                         if (Vector3.Dot(moveInput, cachedDir) >= 0.9)
                         {
                            //pushing
-                           _controller.Move(transform.forward * pushForce * Time.deltaTime);
+                           _controller.AddForce(transform.forward * (pushForce * Time.fixedDeltaTime), ForceMode.VelocityChange);
                         }
 
                         else if (Vector3.Dot(moveInput, cachedDir) <= -0.9)
                         {
                            //pulling
-                           _controller.Move(-transform.forward * pushForce * Time.deltaTime);
+                           _controller.AddForce(-transform.forward * (pushForce * Time.fixedDeltaTime), ForceMode.VelocityChange);
                         }
                         
 

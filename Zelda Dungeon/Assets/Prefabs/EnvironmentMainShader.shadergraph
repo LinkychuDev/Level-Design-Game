@@ -522,9 +522,6 @@
         },
         {
             "m_Id": "b810c58485f641d5b573888c8af31675"
-        },
-        {
-            "m_Id": "ddd735d1540a47dc99d88d3371f40269"
         }
     ],
     "m_GroupDatas": [
@@ -2282,20 +2279,6 @@
         {
             "m_OutputSlot": {
                 "m_Node": {
-                    "m_Id": "ddd735d1540a47dc99d88d3371f40269"
-                },
-                "m_SlotId": 1
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "925086c6e58e4d84a18ec2b0ac2f1ed2"
-                },
-                "m_SlotId": 0
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
                     "m_Id": "e499957076ac4171b440b6892bc0a6d0"
                 },
                 "m_SlotId": 3
@@ -3146,8 +3129,8 @@
     "m_ObjectId": "0a13e827cdfd469e87dda752ac9ed76a",
     "m_Title": "NormalMap",
     "m_Position": {
-        "x": -909.0,
-        "y": 319.0
+        "x": -908.999755859375,
+        "y": 319.0002136230469
     }
 }
 
@@ -3905,8 +3888,8 @@
     "m_ObjectId": "154903d6ba5f4a7da672a744455a8d92",
     "m_Title": "Parallax",
     "m_Position": {
-        "x": -2098.0,
-        "y": 274.0
+        "x": -2098.000244140625,
+        "y": 274.000244140625
     }
 }
 
@@ -5029,7 +5012,7 @@
     "m_Title": "Is Metallic",
     "m_Position": {
         "x": -201.0,
-        "y": -189.0
+        "y": -188.99989318847657
     }
 }
 
@@ -5787,8 +5770,8 @@
     "m_ObjectId": "30eb404d377b4ee995f488277ff0881a",
     "m_Title": "Emission",
     "m_Position": {
-        "x": -919.0,
-        "y": 920.0
+        "x": -919.0000610351563,
+        "y": 920.000244140625
     }
 }
 
@@ -8047,8 +8030,8 @@
     "m_ObjectId": "5e93511e3b064f71b54a63214c2b625c",
     "m_Title": "Main UVs",
     "m_Position": {
-        "x": -1939.0,
-        "y": 522.0
+        "x": -1939.000244140625,
+        "y": 522.000244140625
     }
 }
 
@@ -8797,8 +8780,8 @@
     "m_ObjectId": "7062b1d5057b4266b6f536a6c9279cea",
     "m_Title": "Smoothness",
     "m_Position": {
-        "x": 266.0,
-        "y": -188.0
+        "x": 266.0002136230469,
+        "y": -187.99966430664063
     }
 }
 
@@ -10014,7 +9997,7 @@
     "m_ObjectId": "840e4948a2894ca1bd6c9e7e0d9bf623",
     "m_Title": "Metallic",
     "m_Position": {
-        "x": -868.0,
+        "x": -868.0000610351563,
         "y": -324.0
     }
 }
@@ -11823,7 +11806,7 @@
     "m_ObjectId": "a79adeb299a4447aa2aa6b76e1e220d0",
     "m_Title": "BaseColor",
     "m_Position": {
-        "x": -61.0,
+        "x": -60.999778747558597,
         "y": -490.0
     }
 }
@@ -12013,29 +11996,6 @@
         "e32": 0.0,
         "e33": 1.0
     }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector3MaterialSlot",
-    "m_ObjectId": "ad72a75420604e1dbe83f0945ccae891",
-    "m_Id": 1,
-    "m_DisplayName": "Out",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Out",
-    "m_StageCapability": 2,
-    "m_Value": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "m_DefaultValue": {
-        "x": 0.0,
-        "y": 0.0,
-        "z": 0.0
-    },
-    "m_Labels": []
 }
 
 {
@@ -12382,8 +12342,8 @@
     "m_ObjectId": "b2b9a4313d984ffc87575fd0102198b8",
     "m_Title": "Detail Maps",
     "m_Position": {
-        "x": -190.0,
-        "y": 343.0
+        "x": -189.99977111816407,
+        "y": 343.0002136230469
     }
 }
 
@@ -12498,7 +12458,7 @@
     "m_Title": "Occlusion",
     "m_Position": {
         "x": -888.0,
-        "y": 618.0
+        "y": 618.0001831054688
     }
 }
 
@@ -14671,8 +14631,8 @@
     "m_ObjectId": "d4e1442d04854ba19c672a0dc0154e44",
     "m_Title": "Detail UVs",
     "m_Position": {
-        "x": -793.0,
-        "y": 1222.0
+        "x": -792.999755859375,
+        "y": 1222.000244140625
     }
 }
 
@@ -15426,48 +15386,6 @@
     "m_DefaultValue": 0.0,
     "m_Labels": [],
     "m_LiteralMode": false
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.SubGraphNode",
-    "m_ObjectId": "ddd735d1540a47dc99d88d3371f40269",
-    "m_Group": {
-        "m_Id": ""
-    },
-    "m_Name": "Face Normal",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": -1052.0,
-            "y": -1421.0,
-            "width": 256.00006103515627,
-            "height": 113.9998779296875
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "ad72a75420604e1dbe83f0945ccae891"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": false,
-    "m_DismissedVersion": 0,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_SerializedSubGraph": "{\n    \"subGraph\": {\n        \"fileID\": -5475051401550479605,\n        \"guid\": \"e1024532a1a801f41a6f45f93c8da7a8\",\n        \"type\": 3\n    }\n}",
-    "m_PropertyGuids": [],
-    "m_PropertyIds": [],
-    "m_Dropdowns": [
-        "_Space"
-    ],
-    "m_DropdownSelectedEntries": [
-        "View"
-    ]
 }
 
 {
@@ -16493,7 +16411,7 @@
     "m_Title": "Specular",
     "m_Position": {
         "x": -918.0,
-        "y": 5.0
+        "y": 5.000221252441406
     }
 }
 

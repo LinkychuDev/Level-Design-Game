@@ -1,10 +1,16 @@
 using UnityEngine;
 
-public class IceTestBlock : SystemicClass
+public class IceTestBlock : SystemicClass, IPushable
 {
    public override MaterialType materialType => MaterialType.Ice;
-   
-   
+   private Transform parent;
+
+   public override void Initialise()
+   {
+      base.Initialise();
+      parent = transform.parent;
+   }
+
    public override void Melt()
    {
       Destroy(gameObject);
@@ -45,5 +51,15 @@ public class IceTestBlock : SystemicClass
       {
          Destroy(gameObject);
       }
+   }
+
+   public void Initialize(Transform rb)
+   {
+      transform.parent = rb;
+   }
+
+   public void Cancel()
+   {
+      transform.parent = parent;
    }
 }

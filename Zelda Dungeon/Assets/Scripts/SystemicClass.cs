@@ -2,7 +2,7 @@
 using UnityEngine;
 using System.Collections;
 
-
+[Serializable]
 public enum MaterialType
 {
    None,
@@ -16,13 +16,13 @@ public class SystemicClass : MonoBehaviour
 
     public Material[] _materials { get; protected set; }
     
-    Renderer _renderer;
+    protected Renderer _renderer;
     public GameObject smokeVFX;
     public ParticleSystem waterVFX;
     protected readonly float waterEffectDuration = 3;
     protected readonly float smokeEffectDuration = 8;
     public GameObject burnVFX;
-   public virtual MaterialType materialType { get; }
+   public virtual MaterialType materialType { get; set; }
    protected int originalLayer; 
    
    public float burnTimer = 3f;
@@ -99,7 +99,16 @@ public class SystemicClass : MonoBehaviour
 
     public virtual void Melt()
     {
-       StartCoroutine(WetCoroutine());
+       if (materialType == MaterialType.Ice)
+       {
+          StartCoroutine(Burning());
+       }
+
+       else
+       {
+          StartCoroutine(WetCoroutine());
+       }
+      
        // throw new System.NotImplementedException();
     }
 
@@ -118,7 +127,7 @@ public class SystemicClass : MonoBehaviour
           smokeVFX.SetActive(false);
        }
        
-       if (materialType == MaterialType.Flammable)
+       if (materialType == MaterialType.Flammable || materialType == MaterialType.Ice)
        {
           StartCoroutine(Burning());
        }
@@ -203,7 +212,7 @@ public class SystemicClass : MonoBehaviour
           }
        }
 
-       else if(other.gameObject.layer == LayerMask.NameToLayer("Fire") && materialType == MaterialType.Flammable)
+       else if(other.gameObject.layer == LayerMask.NameToLayer("Fire") && (materialType == MaterialType.Flammable || materialType == MaterialType.Ice))
        {
             StartCoroutine(Burning());
        }
@@ -213,7 +222,7 @@ public class SystemicClass : MonoBehaviour
     {
        if(materialType == MaterialType.Water)
           return;
-       if (other.gameObject.layer == LayerMask.NameToLayer("Fire")  && materialType == MaterialType.Flammable)
+       if (other.gameObject.layer == LayerMask.NameToLayer("Fire") && (materialType == MaterialType.Flammable || materialType == MaterialType.Ice))
        {
           StartCoroutine(Burning());
        }
