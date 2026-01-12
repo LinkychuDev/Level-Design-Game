@@ -11,6 +11,7 @@ public enum ScaleBalance
     Left, 
     Right
 }
+[RequireComponent(typeof(AudioSource))]
 public class WeighingScale : MonoBehaviour
 {
     public WeighingPlate scale1;
@@ -28,11 +29,13 @@ public class WeighingScale : MonoBehaviour
     public float threshHold = 0.1f;
 
    public ScaleBalance scaleBalance;
+   AudioSource audioSource;
     
    public bool shouldActivateInitial;
     public UnityEvent OnScaleRight = new UnityEvent(), OnScaleLeft = new UnityEvent(), OnScaleBalance = new UnityEvent();
     private void Start()
     {
+        audioSource = GetComponent<AudioSource>();
        SetPosition();
 
     }
@@ -59,6 +62,7 @@ public class WeighingScale : MonoBehaviour
                 OnScaleLeft?.Invoke();
             }
          
+            
             scaleBalance = ScaleBalance.Left;
           
         }
@@ -102,6 +106,7 @@ public class WeighingScale : MonoBehaviour
         {
          
             Debug.Log("Imbalanced towards Scale 1");
+            AudioSource.PlayClipAtPoint(AudioManager.instance.windUpClip, transform.position,  AudioManager.instance.gearVolume);
             seq.Append(scale1.transform.DOMove(ImbalanceScale1DownPos, weightSpeed).SetEase(Ease.Linear));
             seq.Join(scale2.transform.DOMove(ImbalanceScale2UpPos, weightSpeed).SetEase(Ease.Linear));
 
@@ -116,6 +121,7 @@ public class WeighingScale : MonoBehaviour
         else if (scale2.GetMass() > scale1.GetMass())
         {
             Debug.Log("Imbalanced towards Scale 2");
+            AudioSource.PlayClipAtPoint(AudioManager.instance.windUpClip, transform.position,  AudioManager.instance.gearVolume);
             seq.Append(scale1.transform.DOMove(ImbalanceScale1UpPos, weightSpeed).SetEase(Ease.Linear));
             seq.Join(scale2.transform.DOMove(ImbalanceScale2DownPos, weightSpeed).SetEase(Ease.Linear));
             seq.OnComplete(() =>
@@ -128,6 +134,7 @@ public class WeighingScale : MonoBehaviour
         else
         {
             Debug.Log("Balanced");
+            AudioSource.PlayClipAtPoint(AudioManager.instance.windUpClip, transform.position,  AudioManager.instance.gearVolume);
             seq.Append(scale1.transform.DOMove(BalanceScale1Pos, weightSpeed).SetEase(Ease.Linear));
             seq.Join(scale2.transform.DOMove(BalanceScale2Pos, weightSpeed).SetEase(Ease.Linear));
             seq.OnComplete(() =>

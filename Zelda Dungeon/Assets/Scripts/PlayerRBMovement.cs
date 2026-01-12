@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class PlayerRBMovement : MonoBehaviour
 {
@@ -50,6 +51,10 @@ public class PlayerRBMovement : MonoBehaviour
     private Vector3 moveDir;
     
     bool isSprinting = false;
+
+    [SerializeField] private AudioClip[] footsteps;
+    [SerializeField] private AudioClip landClip;
+    [SerializeField] private float footstepVolume;
     private void Awake()
     {
         inputManager = InputManager.instance;
@@ -216,21 +221,21 @@ public class PlayerRBMovement : MonoBehaviour
     
     private void OnFootstep(AnimationEvent animationEvent)
     {
-        /*if (animationEvent.animatorClipInfo.weight > 0.5f)
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
         {
-            if (FootstepAudioClips.Length > 0)
+            if (footsteps.Length > 0)
             {
-                var index = Random.Range(0, FootstepAudioClips.Length);
-                AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                var index = Random.Range(0, footsteps.Length);
+                AudioSource.PlayClipAtPoint(footsteps[index], transform.position,footstepVolume);
             }
-        }*/
+        }
     }
 
     private void OnLand(AnimationEvent animationEvent)
     {
-        /*if (animationEvent.animatorClipInfo.weight > 0.5f)
+        if (animationEvent.animatorClipInfo.weight > 0.5f)
         {
-            AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
-        }*/
+            AudioSource.PlayClipAtPoint(landClip, transform.TransformPoint(rb.position), footstepVolume);
+        }
     }
 }

@@ -19,6 +19,7 @@ public class WaterTestBlock : SystemicClass
     {
         waterRenderer = GetComponent<Renderer>();
         _materials = waterRenderer.materials;
+        source = GetComponent<AudioSource>();
         waterCollider = GetComponent<Collider>();
         waterColliders = GetComponents<Collider>();
         //waterMaterial = waterRenderer.materials;
@@ -90,6 +91,9 @@ public class WaterTestBlock : SystemicClass
     {
         gameObject.layer = LayerMask.NameToLayer("Default");  
         SubstanceType = SubstanceType.Smoke;
+        source.clip = AudioManager.instance.bubblesClip;
+        source.volume = AudioManager.instance.bubbleVolume;
+        source.Play();
         ClearEffects();
         smokeVFX.SetActive(true);
         yield return new WaitForSeconds(waterEffectDuration);

@@ -8,6 +8,7 @@ public class ChestScript : BaseInteractable
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        audioSource = GetComponent<AudioSource>();
         animator = GetComponent<Animator>();
     }
 
@@ -18,6 +19,8 @@ public class ChestScript : BaseInteractable
     {
         animator.Play("ChestOpen");
         canInteract = false;
+          
+        audioSource.PlayOneShot(AudioManager.instance.chestClip, AudioManager.instance.chestVolume);
         DialogueManager.instance.DisplayDialogue(dialogueBasic);
         
     }

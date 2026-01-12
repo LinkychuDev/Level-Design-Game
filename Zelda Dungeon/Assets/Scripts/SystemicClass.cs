@@ -12,6 +12,7 @@ public enum MaterialType
    Ice,
    Fire
 }
+[RequireComponent(typeof(AudioSource))]
 public class SystemicClass : MonoBehaviour
 {
     public SubstanceType SubstanceType { get;  protected set; }
@@ -37,7 +38,7 @@ public class SystemicClass : MonoBehaviour
     //water
     
     //hit fire, create steam
-    
+    private float defaultVolume;
    
     public int maxSmokeColliders = 3;
 
@@ -45,7 +46,9 @@ public class SystemicClass : MonoBehaviour
     //ice at fire, then ice turns to steam
 
     public bool shouldBlowSmoke = true;
-   
+
+    
+    internal AudioSource source;
     public float smokeBoxScale;
     public float pushForce;
     
@@ -59,8 +62,12 @@ public class SystemicClass : MonoBehaviour
     public virtual void Initialise()
     {
        _renderer = GetComponent<Renderer>();
+       
        originalLayer = gameObject.layer;
        _materials = _renderer.materials;
+       source = GetComponent<AudioSource>();
+       source.loop = true;
+       defaultVolume = source.volume;
        smokeColliders = new Collider[maxSmokeColliders];;
        Default();
 
@@ -104,7 +111,12 @@ public class SystemicClass : MonoBehaviour
        // throw new System.NotImplementedException();
        SetMaterialProperty(0, 1);
        SubstanceType = SubstanceType.Frozen;
+       if (source == null)
+       {
+          source = GetComponent<AudioSource>();
+       }
        gameObject.layer = LayerMask.NameToLayer("Ice");
+       source.PlayOneShot(AudioManager.instance.freezeClip, AudioManager.instance.freezeVolume);
        if (smokeVFX != null)
        {
           smokeVFX.SetActive(false);
@@ -154,6 +166,7 @@ public class SystemicClass : MonoBehaviour
        SetMaterialProperty(1,0);
        gameObject.layer = LayerMask.NameToLayer("Fire");
        SubstanceType = SubstanceType.Burning;
+       source.PlayOneShot(AudioManager.instance.igniteClip, AudioManager.instance.igniteVolume);
        if (smokeVFX != null)
        {
           smokeVFX.SetActive(false);
@@ -175,6 +188,10 @@ public class SystemicClass : MonoBehaviour
        {
           smokeVFX.SetActive(true);
        }
+
+       source.clip = AudioManager.instance.windClip;
+       source.volume = AudioManager.instance.windVolume;
+       source.Play();
        yield return new WaitForSeconds(smokeEffectDuration);
        Default();
     }
@@ -197,6 +214,10 @@ public class SystemicClass : MonoBehaviour
        {
           burnVFX.gameObject.SetActive(false);
        }
+       
+       source.clip = null;
+       source.volume = defaultVolume;
+       source.Play();
        
       
     }
@@ -235,7 +256,10 @@ public class SystemicClass : MonoBehaviour
           waterVFX.gameObject.SetActive(true);
           waterVFX.Play();
        }
-       
+
+       source.clip = AudioManager.instance.waterClip;
+       source.volume = AudioManager.instance.waterVolume;
+       source.Play();
        yield return new WaitForSeconds(waterEffectDuration);
        Default();
     }
@@ -248,6 +272,11 @@ public class SystemicClass : MonoBehaviour
           burnVFX.SetActive(true);
        }
 
+       
+       source.clip = AudioManager.instance.burnClip;
+       source.volume = AudioManager.instance.burnVolume;
+       source.Play();
+       
        if (materialType == MaterialType.Ice)
        {
           Tween tween = transform.DOScale(transform.localScale * 0.1f, burnTimer);

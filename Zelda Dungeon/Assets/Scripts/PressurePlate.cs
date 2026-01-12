@@ -2,13 +2,14 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(AudioSource))]
 public class PressurePlate : MonoBehaviour
 {
    [SerializeField] private bool isTemp = false;
    
    public UnityEvent OnCollisionStayed;
    public UnityEvent ExitCollisionEvent;
-
+   private AudioSource audioSource => GetComponent<AudioSource>();
    public bool playerOnly;
    private Collider otherCollider;
    bool activated = false;
@@ -26,6 +27,7 @@ public class PressurePlate : MonoBehaviour
                   if(activated)
                      return;
                   activated = true;
+                  audioSource.PlayOneShot(AudioManager.instance.pressureClip, AudioManager.instance.pressureVolume);
                   OnCollisionStayed?.Invoke();
                }
             }
@@ -36,6 +38,7 @@ public class PressurePlate : MonoBehaviour
                   return;
                activated = true;
                otherCollider = other.collider;
+               audioSource.PlayOneShot(AudioManager.instance.pressureClip, AudioManager.instance.pressureVolume);
                OnCollisionStayed?.Invoke();
             }
             

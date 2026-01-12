@@ -17,13 +17,19 @@ public class IceTestBlock : SystemicClass, IPushable
       if (burnVFX != null)
       {
          burnVFX.SetActive(true);
+         source.PlayOneShot(AudioManager.instance.burnClip, AudioManager.instance.burnVolume);
       }
 
       if (waterVFX != null)
       {
          waterVFX.gameObject.SetActive(true);
+         source.clip = AudioManager.instance.waterClip;
+         source.volume = AudioManager.instance.waterVolume;
+         source.Play();
          waterVFX.Play();
       }
+      
+     
       SetMaterialProperty(0, 1);
       transform.DOScale(transform.localScale * 0.1f, burnTimer).OnComplete(() => Destroy(gameObject));
       
@@ -44,6 +50,7 @@ public class IceTestBlock : SystemicClass, IPushable
    {
       SubstanceType = SubstanceType.Frozen;
       gameObject.layer = originalLayer;
+      
       ClearEffects();
       SetMaterialProperty(0, 1);
    }
