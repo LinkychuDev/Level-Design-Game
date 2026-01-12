@@ -1,12 +1,13 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 
 public enum AbilityType
 {
-    Fire = 1,
-    Ice = 2,
+    Ignite = 1,
+    Freeze = 2,
 }
 public class PlayerAbilities : MonoBehaviour
 {
@@ -33,8 +34,8 @@ public class PlayerAbilities : MonoBehaviour
 
     private bool abilityUsed = false;
 
-    [SerializeField] private GameObject iceImage;
-    [SerializeField] private GameObject fireImage;
+    [SerializeField] private Image iceImage;
+    [SerializeField] private Image fireImage;
    // public bool isUsingAbility;
    [SerializeField] private bool isUnlocked;
    private Transform imageCanvasParent;
@@ -52,6 +53,12 @@ public class PlayerAbilities : MonoBehaviour
    [ColorUsage(false, true)] [SerializeField] private Color HoveredColour;
    [ColorUsage(true, false)][SerializeField] private Color HoveredColourBase;
 
+
+   public float inactiveSpriteAlpha = 60f;
+   public float activeSpriteAlpha = 255f;
+
+   private Color FireImageColour;
+   private Color IceImageColour;
    private void Awake()
    {
        
@@ -68,6 +75,8 @@ public class PlayerAbilities : MonoBehaviour
        detectedColliders = new Collider[maxColliders]; 
        canvas.SetActive(false);
        imageCanvasParent = fireImage != null ? fireImage.transform.parent : iceImage.transform.parent;
+       IceImageColour = iceImage.color;
+       FireImageColour = fireImage.color;
        //detectionSphere.gameObject.SetActive(false);
 
        if (isUnlocked)
@@ -89,8 +98,23 @@ public class PlayerAbilities : MonoBehaviour
         inputManager.input.Ability.SelectAbility1.performed += OnIceSelected;
         inputManager.input.Ability.SelectAbility2.performed += OnFireSelected;
         inputManager.input.Ability.Perform.performed += OnAbilityPerformed;
+        inputManager.input.Ability.QuickSelect.performed += QuickSelectOnperformed;
         GameEventsManager.instance.UnlockedFireAndIce += OnUnlockedAbility;
 
+    }
+
+    private void QuickSelectOnperformed(InputAction.CallbackContext context)
+    {
+        
+        if (currentAbility == AbilityType.Freeze)
+        {
+            OnFireSelected((context));
+        }
+
+        else
+        {
+            OnIceSelected((context));
+        }
     }
 
     void OnUnlockedAbility()
@@ -109,14 +133,14 @@ public class PlayerAbilities : MonoBehaviour
         int abilityType = (int)((int)currentAbility +  inputValue) ;
         //loop around
 
-        if (abilityType < (int)AbilityType.Fire)
+        if (abilityType < (int)AbilityType.Ignite)
         {
-            abilityType = (int)AbilityType.Ice;
+            abilityType = (int)AbilityType.Freeze;
         }
 
-        else if (abilityType > (int)AbilityType.Ice)
+        else if (abilityType > (int)AbilityType.Freeze)
         {
-            abilityType = (int)AbilityType.Fire;
+            abilityType = (int)AbilityType.Ignite;
         }
         
         currentAbility = (AbilityType)(abilityType);
@@ -142,6 +166,7 @@ public class PlayerAbilities : MonoBehaviour
         inputManager.input.Ability.SelectAbility1.performed -= OnIceSelected;
         inputManager.input.Ability.SelectAbility2.performed -= OnFireSelected;
         inputManager.input.Ability.Perform.performed -= OnAbilityPerformed;
+        inputManager.input.Ability.QuickSelect.performed -= QuickSelectOnperformed;
         GameEventsManager.instance.UnlockedFireAndIce -= OnUnlockedAbility;
         Shader.SetGlobalFloat("_EnvironmentState", 0);
        
@@ -151,7 +176,7 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (!isUnlocked)
             return;
-        currentAbility = AbilityType.Ice;
+        currentAbility = AbilityType.Freeze;
         SetImage(currentAbility);
 
     }
@@ -160,7 +185,7 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (!isUnlocked)
             return;
-        currentAbility = AbilityType.Fire;
+        currentAbility = AbilityType.Ignite;
         SetImage(currentAbility);
        
 
@@ -171,6 +196,64 @@ public class PlayerAbilities : MonoBehaviour
     {
         if (!isUnlocked)
             return;
+        if (!GameEventsManager.instance.firstFreeze || !GameEventsManager.instance.firstIgnite)
+        {
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(new Vector3(Screen.width/2, Screen.height/2, 0)), out RaycastHit hit, maxRayDistance, ~layerMask))
+            {
+                
+                if (hit.collider.TryGetComponent(out SystemicClass block) && block.isEnabled)
+                {
+                    //GameEventsManager.instance.ShowInteractPrompt(true, currentAbility.ToString(),
+                        //PromptType.AbilityPerform, inputManager.IsUsingKeyboard());
+
+                        if (currentAbility == AbilityType.Freeze)
+                        {
+                            if (!GameEventsManager.instance.firstFreeze)
+                            {
+                                GameEventsManager.instance.isIceInRange = true;
+                                GameEventsManager.instance.isFireInRange = false;
+                            }
+
+                            else
+                            {
+                                GameEventsManager.instance.isIceInRange = false;
+                            }
+                            
+                        }
+
+                        else
+                        {
+                            if (!GameEventsManager.instance.firstIgnite)
+                            {
+                                GameEventsManager.instance.isIceInRange = false;
+                                GameEventsManager.instance.isFireInRange = true;
+                            }
+
+                            else
+                            {
+                                GameEventsManager.instance.isFireInRange = false;
+                            }
+                            
+                        }
+                    //var material = this.block.GetComponent<Renderer>().material;
+
+                }
+                
+                else
+                {
+                    GameEventsManager.instance.isIceInRange = false;
+                    GameEventsManager.instance.isFireInRange = false;
+                    GameEventsManager.instance.isUsingAbility = false;
+                }
+            }
+
+            else
+            {
+                GameEventsManager.instance.isIceInRange = false;
+                GameEventsManager.instance.isFireInRange = false;
+                GameEventsManager.instance.isUsingAbility = false;
+            }
+        }
         if (abilityUsed)
         {
 
@@ -205,8 +288,22 @@ public class PlayerAbilities : MonoBehaviour
                 {
                     //Highlight Object
                     Debug.Log(hit.transform.name);
-                    if (hit.collider.TryGetComponent(out SystemicClass block))
+                    if (hit.collider.TryGetComponent(out SystemicClass block) && block.isEnabled)
                     {
+                        if (currentAbility == AbilityType.Freeze)
+                        {
+                            GameEventsManager.instance.isIceInRange = true;
+                            GameEventsManager.instance.isFireInRange = false;
+                        }
+
+                        else
+                        {
+                            GameEventsManager.instance.isIceInRange = false;
+                            GameEventsManager.instance.isFireInRange = true;
+                        }
+                        
+                        GameEventsManager.instance.isUsingAbility = true; 
+                      //  GameEventsManager.instance.ShowInteractPrompt(true, currentAbility.ToString(), PromptType.AbilityUse, inputManager.IsUsingKeyboard());
                         this.block = block;
                         //var material = this.block.GetComponent<Renderer>().material;
                         
@@ -251,6 +348,12 @@ public class PlayerAbilities : MonoBehaviour
             block.UnHover();
             this.block = null;
         }
+        
+        GameEventsManager.instance.isIceInRange = false;
+        GameEventsManager.instance.isFireInRange = false;
+        GameEventsManager.instance.isUsingAbility = false;
+        
+       
     }
 
     void UseObject(SystemicClass substance, string label)
@@ -258,41 +361,17 @@ public class PlayerAbilities : MonoBehaviour
         if (!isUnlocked)
             return;
         Material[] materials = substance._materials;
-        if (currentAbility == AbilityType.Fire)
+        if (currentAbility == AbilityType.Ignite)
         {
-                           
+            GameEventsManager.instance.firstIgnite = true;               
             //melt ice
             if (block.SubstanceType == SubstanceType.Frozen)
             {
-
-
-                foreach (var material in materials)
-                {
-                    material.SetFloat("_IsFrozen", 0);
-                    material.SetFloat("_IsOnFire", 0);
-                }
                 block.Melt();
             }
             else
             {
-                if (label == "Water")
-                {
-                    foreach (var material in materials)
-                    {
-                        material.SetFloat("_IsFrozen", 0);
-                    }
-                    block.Ignite();
-                }
-
-                else
-                {
-                    foreach (var material in materials)
-                    {
-                        material.SetFloat("_IsFrozen", 0);
-                        material.SetFloat("_IsOnFire", 1);
-                    }
-                    block.Ignite();
-                }
+                block.Ignite();
                 
             }
 
@@ -301,24 +380,17 @@ public class PlayerAbilities : MonoBehaviour
 
         else
         {
+            GameEventsManager.instance.firstFreeze = true;
             //make steam
             if (block.SubstanceType == SubstanceType.Burning)
             {
-                foreach (var material in materials)
-                {
-                    material.SetFloat("_IsFrozen", 0);
-                    material.SetFloat("_IsOnFire", 0);
-                }
+                
                 block.Steam();
             }
             
             else
             {
-                foreach (Material material in materials)
-                {
-                    material.SetFloat("_IsOnFire", 0);
-                    material.SetFloat("_IsFrozen", 1);
-                }
+               
                 block.Freeze();
             }
                             
@@ -336,15 +408,19 @@ public class PlayerAbilities : MonoBehaviour
         
         switch (abilityType)
         {
-            case AbilityType.Fire:
-                fireImage.SetActive(true);
-                iceImage.SetActive(false);
+            case AbilityType.Ignite:
+                FireImageColour.a = activeSpriteAlpha;
+                IceImageColour.a = inactiveSpriteAlpha;
+                
                 break;
-            case AbilityType.Ice:
-                iceImage.SetActive(true);
-                fireImage.SetActive(false);
+            case AbilityType.Freeze:
+                IceImageColour.a = activeSpriteAlpha;
+                FireImageColour.a = inactiveSpriteAlpha;
                 break;
         }
+
+        fireImage.color = FireImageColour;
+        iceImage.color = IceImageColour;
     }
 
     void HideImages()
@@ -360,6 +436,12 @@ public class PlayerAbilities : MonoBehaviour
             block.DeHighlight();
             
         }*/
+        
+        //GameEventsManager.instance.ShowInteractPrompt(false);
+        GameEventsManager.instance.isIceInRange = false;
+        GameEventsManager.instance.isFireInRange = false;
+        GameEventsManager.instance.isUsingAbility = false;
+        
         
         Debug.Log("Cancel Ability");
 
@@ -414,7 +496,7 @@ public class PlayerAbilities : MonoBehaviour
             {
                 foreach (Material material in renderer.materials)
                 {
-                    if (detectedColliders[i].TryGetComponent(out SystemicClass substance))
+                    if (detectedColliders[i].TryGetComponent(out SystemicClass substance) && substance.isEnabled)
                     {
                         material.SetFloat("_IsSystemic", 1);
                     }

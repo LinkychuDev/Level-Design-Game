@@ -59,6 +59,7 @@ public class GameManager : MonoBehaviour
     public void Death()
     {
         player.position = playerStartPosition;
+      
     }
 
     // Update is called once per frame

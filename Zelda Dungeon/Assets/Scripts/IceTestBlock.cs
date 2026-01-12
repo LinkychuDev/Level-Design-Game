@@ -1,3 +1,4 @@
+using DG.Tweening;
 using UnityEngine;
 
 public class IceTestBlock : SystemicClass, IPushable
@@ -13,17 +14,29 @@ public class IceTestBlock : SystemicClass, IPushable
 
    public override void Melt()
    {
-      Destroy(gameObject);
+      if (burnVFX != null)
+      {
+         burnVFX.SetActive(true);
+      }
+
+      if (waterVFX != null)
+      {
+         waterVFX.gameObject.SetActive(true);
+         waterVFX.Play();
+      }
+      SetMaterialProperty(0, 1);
+      transform.DOScale(transform.localScale * 0.1f, burnTimer).OnComplete(() => Destroy(gameObject));
+      
    }
 
    public override void Ignite()
    {
-      Destroy(gameObject);
+      Melt();
    }
 
    public override void Steam()
    {
-      Destroy(gameObject);
+      Melt();
 
    }
    
@@ -32,6 +45,7 @@ public class IceTestBlock : SystemicClass, IPushable
       SubstanceType = SubstanceType.Frozen;
       gameObject.layer = originalLayer;
       ClearEffects();
+      SetMaterialProperty(0, 1);
    }
 
    public override void OnCollisionEnter(Collision other)
@@ -39,7 +53,7 @@ public class IceTestBlock : SystemicClass, IPushable
       base.OnCollisionEnter(other);
       if (other.gameObject.layer == LayerMask.NameToLayer("Fire"))
       {
-         Destroy(gameObject);
+         Melt();
       }
       
    }
@@ -49,7 +63,7 @@ public class IceTestBlock : SystemicClass, IPushable
       base.OnTriggerEnter(other);
       if (other.gameObject.layer == LayerMask.NameToLayer("Fire"))
       {
-         Destroy(gameObject);
+        Melt();
       }
    }
 

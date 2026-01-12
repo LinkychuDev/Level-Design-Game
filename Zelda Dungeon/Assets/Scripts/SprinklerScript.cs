@@ -3,7 +3,7 @@ using UnityEngine;
 public class SprinklerScript : SystemicClass
 {
     //private IceTestBlock iceBlockReference;
-    
+    Collider collider_;
     public GameObject iceBlock;
     public override void Freeze()
     {
@@ -13,7 +13,7 @@ public class SprinklerScript : SystemicClass
         CreateIceBlock();
         SubstanceType = SubstanceType.Frozen;
         gameObject.layer = LayerMask.NameToLayer("Ice");
-       
+        collider_ = GetComponent<Collider>();
     }
 
     
@@ -47,7 +47,7 @@ public class SprinklerScript : SystemicClass
 
     void CreateIceBlock()
     {
-        var ice = Instantiate(iceBlock, waterVFX.transform.position, Quaternion.identity).GetComponent<IceTestBlock>();
-        
+        var ice = Instantiate(iceBlock, waterVFX.transform.position, Quaternion.identity).GetComponent<Collider>();
+       
     }
 }

@@ -1,10 +1,12 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
 
 public enum ScaleBalance
 {
+    None,
     Balance,
     Left, 
     Right
@@ -90,39 +92,84 @@ public class WeighingScale : MonoBehaviour
         
         
     }
+
+
+    public void UpdatePosition()
+    {
+        Debug.Log("Update Position");
+        Sequence seq = DOTween.Sequence();
+        if (scale1.GetMass() > scale2.GetMass())
+        {
+         
+            Debug.Log("Imbalanced towards Scale 1");
+            seq.Append(scale1.transform.DOMove(ImbalanceScale1DownPos, weightSpeed).SetEase(Ease.Linear));
+            seq.Join(scale2.transform.DOMove(ImbalanceScale2UpPos, weightSpeed).SetEase(Ease.Linear));
+
+            seq.OnComplete(() =>
+            {
+                OnScaleLeft.Invoke();
+                scaleBalance = ScaleBalance.Left;
+            });
+
+        }
+        
+        else if (scale2.GetMass() > scale1.GetMass())
+        {
+            Debug.Log("Imbalanced towards Scale 2");
+            seq.Append(scale1.transform.DOMove(ImbalanceScale1UpPos, weightSpeed).SetEase(Ease.Linear));
+            seq.Join(scale2.transform.DOMove(ImbalanceScale2DownPos, weightSpeed).SetEase(Ease.Linear));
+            seq.OnComplete(() =>
+            {
+                OnScaleRight.Invoke();
+                scaleBalance = ScaleBalance.Left;
+            });
+        }
+
+        else
+        {
+            Debug.Log("Balanced");
+            seq.Append(scale1.transform.DOMove(BalanceScale1Pos, weightSpeed).SetEase(Ease.Linear));
+            seq.Join(scale2.transform.DOMove(BalanceScale2Pos, weightSpeed).SetEase(Ease.Linear));
+            seq.OnComplete(() =>
+            {
+                OnScaleBalance.Invoke();
+                scaleBalance = ScaleBalance.Balance;
+            });
+        }
+
+        seq.Play();
+    }
+    /*
     private void FixedUpdate()
     {
        
-
-        if(scale1.accumulatedMass > scale2.accumulatedMass)
+    
+        
+        if(scale1.GetMass() > scale2.GetMass())
         {
             Debug.Log("Imbalanced towards Scale 1");
-            scale1.rigidbody.MovePosition( Vector3.MoveTowards(scale1.rigidbody.position, ImbalanceScale1DownPos,  (Time.deltaTime * weightSpeed)));
-            scale2.rigidbody.MovePosition( Vector3.MoveTowards(scale2.rigidbody.position, ImbalanceScale2UpPos,  (Time.deltaTime * weightSpeed)));
+            scale1.transform.position = ( Vector3.MoveTowards(scale1.rigidbody.position, ImbalanceScale1DownPos,  (Time.deltaTime * weightSpeed)));
+            scale2.transform.position =( Vector3.MoveTowards(scale2.rigidbody.position, ImbalanceScale2UpPos,  (Time.deltaTime * weightSpeed)));
 
-            if ((Vector3.Distance(scale1.rigidbody.position, ImbalanceScale1UpPos) <= threshHold) && Vector3.Distance(scale2.rigidbody.position, ImbalanceScale2UpPos) <= threshHold)
+            if ((Vector3.Distance(scale1.transform.position, ImbalanceScale1UpPos) <= threshHold) && Vector3.Distance(scale2.transform.position, ImbalanceScale2UpPos) <= threshHold)
             {
-                if(scaleBalance == ScaleBalance.Left)
-                    return;
-                OnScaleLeft?.Invoke();
+                OnScaleLeft.Invoke();
                 scaleBalance = ScaleBalance.Left;
                 Debug.Log("Left Event Called");
             }
           
         }
 
-        else if(scale2.accumulatedMass > scale1.accumulatedMass)
+        else if(scale2.GetMass() > scale1.GetMass())
         {
             Debug.Log("Imbalanced towards Scale 2");
-            scale1.rigidbody.MovePosition( Vector3.MoveTowards(scale1.rigidbody.position, ImbalanceScale1UpPos,  (Time.deltaTime * weightSpeed)));
-            scale2.rigidbody.MovePosition( Vector3.MoveTowards(scale2.rigidbody.position, ImbalanceScale2DownPos,  (Time.deltaTime * weightSpeed)));
+            scale1.transform.position = ( Vector3.MoveTowards(scale1.transform.position, ImbalanceScale1UpPos,  (Time.deltaTime * weightSpeed)));
+            scale2.transform.position = ( Vector3.MoveTowards(scale2.transform.position, ImbalanceScale2DownPos,  (Time.deltaTime * weightSpeed)));
 
-            if ((Vector3.Distance(scale1.rigidbody.position, ImbalanceScale1DownPos) <= threshHold) &&
-                Vector3.Distance(scale2.rigidbody.position, ImbalanceScale2DownPos) <= threshHold)
+            if ((Vector3.Distance(scale1.transform.position, ImbalanceScale1DownPos) <= threshHold) &&
+                Vector3.Distance(scale2.transform.position, ImbalanceScale2DownPos) <= threshHold)
             {
-                if(scaleBalance == ScaleBalance.Right)
-                    return;
-                OnScaleRight?.Invoke();
+                OnScaleRight.Invoke();
                 scaleBalance = ScaleBalance.Right;
                 Debug.Log("Right Event Called");
             }
@@ -133,23 +180,20 @@ public class WeighingScale : MonoBehaviour
         {
             Debug.Log("Balanced");
             
-            scale1.rigidbody.MovePosition( Vector3.MoveTowards(scale1.rigidbody.position, BalanceScale1Pos,  (Time.deltaTime * weightSpeed)));
-            scale2.rigidbody.MovePosition( Vector3.MoveTowards(scale2.rigidbody.position, BalanceScale2Pos,  (Time.deltaTime * weightSpeed)));
+            scale1.transform.position =( Vector3.MoveTowards(scale1.transform.position, BalanceScale1Pos,  (Time.deltaTime * weightSpeed)));
+            scale2.transform.position= ( Vector3.MoveTowards(scale2.transform.position, BalanceScale2Pos,  (Time.deltaTime * weightSpeed)));
 
             
-            if ((Vector3.Distance(scale1.rigidbody.position, BalanceScale1Pos) <= threshHold &&
-                 Vector3.Distance(scale2.rigidbody.position, BalanceScale2Pos) <= threshHold))
+            if ((Vector3.Distance(scale1.transform.position, BalanceScale1Pos) <= threshHold &&
+                 Vector3.Distance(scale2.transform.position, BalanceScale2Pos) <= threshHold))
             {
-                if(scaleBalance == ScaleBalance.Balance)
-                    return;
-                OnScaleBalance?.Invoke();
+                OnScaleBalance.Invoke();
                 scaleBalance = ScaleBalance.Balance;
                 Debug.Log("Balanced Event Called");
             }
             
+            
         }
-    }
-
-
+    }*/
     
 }

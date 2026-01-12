@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class SystemicChanger : SystemicClass
@@ -11,15 +12,12 @@ public class SystemicChanger : SystemicClass
 
     
 
+    
     public void ChangeMaterialType(int mt)
     {
+        isEnabled = true;
         Initialise();
         materialType = (MaterialType)mt;
-        foreach (var material in _renderer.materials)
-        {
-            material.SetFloat("_IsFrozen", 1);
-            material.SetFloat("_IsOnFire", 0);
-        }
         Debug.Log(materialType);
         
         if (materialType == MaterialType.Ice)
@@ -32,9 +30,10 @@ public class SystemicChanger : SystemicClass
             Default();
         }
     }
+
     
-    
-        
+
+
     // Update is called once per frame
    
 }

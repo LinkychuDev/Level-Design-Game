@@ -51,6 +51,7 @@ public class WaterTestBlock : SystemicClass
         gameObject.layer = originalLayer;
         ClearEffects();
         SetTriggers(true);
+        SetMaterialProperty();
     }
   
     public override void Freeze()
@@ -68,6 +69,7 @@ public class WaterTestBlock : SystemicClass
 
     public override void Ignite()
     {
+        SetMaterialProperty();
         Steam();
        //bubblePrefab.SetActive(true);
        // smokeVFX.SetActive(false);

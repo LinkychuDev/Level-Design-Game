@@ -35,31 +35,44 @@ public class PlayerInteract : MonoBehaviour
             {
                 if (interactable.canInteract)
                 {
-                    interactRay.transform.position = hit.transform.position + (Vector3.up * desiredYHintPos) ;
-                    interactRay.SetActive(true);
+                    /*interactRay.transform.position = hit.transform.position + (Vector3.up * desiredYHintPos) ;
+                    interactRay.SetActive(true);*/
+                    /*ameEventsManager.instance.ShowInteractPrompt(true, "Interact", PromptType.Interact,
+                        inputManager.IsUsingKeyboard());*/
+                    GameEventsManager.instance.isInteractableInRange = true;
                     if (inputManager.input.Player.Interact.IsPressed())
                     {
                         interactable.OnInteract();
+                        //GameEventsManager.instance.ShowInteractPrompt(false);
+                       
                     }
 
                 }
+
                 else
                 {
-                    interactRay.SetActive(false);
+                    GameEventsManager.instance.isInteractableInRange = false;
                 }
-             
+                
+                
+
+
             }
 
             else
             {
-                interactRay.SetActive(false);
+                GameEventsManager.instance.isInteractableInRange = false;
             }
         }
 
         else
         {
-            interactRay.SetActive(false);
+            GameEventsManager.instance.isInteractableInRange = false;
         }
+        
+     
+
+
     }
 
     private void OnDrawGizmos()

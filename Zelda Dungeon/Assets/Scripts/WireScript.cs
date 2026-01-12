@@ -3,8 +3,8 @@ using UnityEngine;
 
 public class WireScript : MonoBehaviour
 {
-    [ColorUsage(false, true)] public Color ActiveColor;
-    [ColorUsage(false, true)] public Color InactiveColor;
+    [ColorUsage(true, true)] public Color ActiveColor;
+    [ColorUsage(true, true)] public Color InactiveColor;
     
     Renderer rend;
     
@@ -18,7 +18,7 @@ public class WireScript : MonoBehaviour
     {
        // SetActiveState(setActive);
     }
-    
+ 
     public void SetActiveState(bool active)
     {
         if (active)

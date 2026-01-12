@@ -132,7 +132,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""name"": ""Crouch"",
                     ""type"": ""Button"",
                     ""id"": ""27c5f898-bc57-4ee1-8800-db469aca5fe3"",
-                    ""expectedControlType"": ""Button"",
+                    ""expectedControlType"": """",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -583,7 +583,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""b399db64-2466-4069-ad07-97b3dd92422d"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/rightStickPress"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1168,6 +1168,15 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""QuickSelect"",
+                    ""type"": ""Button"",
+                    ""id"": ""d5ff7f0f-f701-4156-a683-f53166657b3f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -1185,7 +1194,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""9e65b531-db49-4f52-8c82-a916ff369aeb"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -1269,6 +1278,28 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
                     ""action"": ""SelectAbility"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fd5a0b17-a8ed-4a38-810a-d50e0edfd7a5"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""QuickSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd5da2cd-1996-4b9d-be22-0296cf2285e7"",
+                    ""path"": ""<Keyboard>/tab"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard&Mouse"",
+                    ""action"": ""QuickSelect"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -1367,6 +1398,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         m_Ability_SelectAbility2 = m_Ability.FindAction("Select Ability 2", throwIfNotFound: true);
         m_Ability_Use = m_Ability.FindAction("Use", throwIfNotFound: true);
         m_Ability_SelectAbility = m_Ability.FindAction("SelectAbility", throwIfNotFound: true);
+        m_Ability_QuickSelect = m_Ability.FindAction("QuickSelect", throwIfNotFound: true);
     }
 
     ~@PlayerControls()
@@ -1844,6 +1876,7 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Ability_SelectAbility2;
     private readonly InputAction m_Ability_Use;
     private readonly InputAction m_Ability_SelectAbility;
+    private readonly InputAction m_Ability_QuickSelect;
     /// <summary>
     /// Provides access to input actions defined in input action map "Ability".
     /// </summary>
@@ -1875,6 +1908,10 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Ability/SelectAbility".
         /// </summary>
         public InputAction @SelectAbility => m_Wrapper.m_Ability_SelectAbility;
+        /// <summary>
+        /// Provides access to the underlying input action "Ability/QuickSelect".
+        /// </summary>
+        public InputAction @QuickSelect => m_Wrapper.m_Ability_QuickSelect;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -1916,6 +1953,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SelectAbility.started += instance.OnSelectAbility;
             @SelectAbility.performed += instance.OnSelectAbility;
             @SelectAbility.canceled += instance.OnSelectAbility;
+            @QuickSelect.started += instance.OnQuickSelect;
+            @QuickSelect.performed += instance.OnQuickSelect;
+            @QuickSelect.canceled += instance.OnQuickSelect;
         }
 
         /// <summary>
@@ -1942,6 +1982,9 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
             @SelectAbility.started -= instance.OnSelectAbility;
             @SelectAbility.performed -= instance.OnSelectAbility;
             @SelectAbility.canceled -= instance.OnSelectAbility;
+            @QuickSelect.started -= instance.OnQuickSelect;
+            @QuickSelect.performed -= instance.OnQuickSelect;
+            @QuickSelect.canceled -= instance.OnQuickSelect;
         }
 
         /// <summary>
@@ -2238,5 +2281,12 @@ public partial class @PlayerControls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSelectAbility(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "QuickSelect" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnQuickSelect(InputAction.CallbackContext context);
     }
 }

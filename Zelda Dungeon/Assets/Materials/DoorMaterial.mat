@@ -39,7 +39,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 2800000, guid: 2e067b39bd5d0b742a037582cd9a2b00, type: 3}
+        m_Texture: {fileID: 2800000, guid: d9c0dd5cdac07b145be73329e489869a, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -123,7 +123,7 @@ Material:
     - _HighlightedFadeEnd: 40
     - _HighlightedFadeStart: 10
     - _METALLICSPECGLOSSMAP: 0
-    - _Metallic: 0.763
+    - _Metallic: 0.161
     - _NORMALMAP: 0
     - _OCCLUSIONMAP: 0
     - _OcclusionStrength: 1

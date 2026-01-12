@@ -102,6 +102,18 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SystemicShader_08e9eec25d3f4a2f9c0078d290f8199c_BaseMap_4148773123_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SystemicShader_08e9eec25d3f4a2f9c0078d290f8199c_MaskMap_2239235374_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SystemicShader_08e9eec25d3f4a2f9c0078d290f8199c_NormalMap_432123719_Texture2D:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -197,7 +209,7 @@ Material:
     - _IceFresnelColour: {r: 0.48113203, g: 1.2168337, b: 2, a: 1}
     - _IceUVScale: {r: 1, g: 1, b: 0, a: 0}
     - _IceUVs: {r: 1, g: 1, b: 0, a: 0}
-    - _MainColour: {r: 0.3930669, g: 0.49935445, b: 0.6886792, a: 1}
+    - _MainColour: {r: 0.19446424, g: 0.25273678, b: 0.3584906, a: 1}
     - _ShoreColour: {r: 0.12775901, g: 0.26472756, b: 0.31132078, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _foamSpeed: {r: 0, g: 0.2, b: 0.03, a: 0}

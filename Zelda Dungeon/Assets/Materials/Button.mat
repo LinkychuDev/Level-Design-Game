@@ -125,6 +125,8 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _EnvironmentState: 0
+    - _FireFresnelAmount: 0
+    - _FireFresnelPower: 0.3
     - _FireFresnelStrength: 0
     - _FireTimer: 0
     - _FresnelPower: 2
@@ -168,7 +170,7 @@ Material:
     m_Colors:
     - _AlbedoOffset: {r: 0, g: 0, b: 0, a: 0}
     - _AlbedoTiling: {r: 1, g: 1, b: 0, a: 0}
-    - _BaseColor: {r: 1, g: 0.9030221, b: 0.654902, a: 1}
+    - _BaseColor: {r: 1, g: 0.9396977, b: 0.7877358, a: 1}
     - _BaseColour: {r: 0, g: 0, b: 0, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0.047169805, g: 0.047169805, b: 0.047169805, a: 1}
@@ -177,6 +179,7 @@ Material:
     - _FireFresnelColour: {r: 0, g: 0, b: 0, a: 1}
     - _HighlightedColourFire: {r: 1, g: 0.42995876, b: 0.3066038, a: 1}
     - _HighlightedColourIce: {r: 0.4392156, g: 1.108189, b: 1.678431, a: 1}
+    - _HighlightedColourIceBase: {r: 0.43921557, g: 1.108189, b: 1.6784312, a: 1}
     - _HoveredColour: {r: 1.644205, g: 1.556492, b: 0.5916477, a: 1}
     - _IceColour: {r: 0, g: 0, b: 0, a: 1}
     - _IceFresnelColour: {r: 0, g: 0, b: 0, a: 1}

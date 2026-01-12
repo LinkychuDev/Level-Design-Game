@@ -1,6 +1,7 @@
 ﻿using System;
 using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 [Serializable]
 public enum MaterialType
@@ -8,7 +9,8 @@ public enum MaterialType
    None,
    Flammable,
    Water,
-   Ice
+   Ice,
+   Fire
 }
 public class SystemicClass : MonoBehaviour
 {
@@ -23,7 +25,9 @@ public class SystemicClass : MonoBehaviour
     protected readonly float smokeEffectDuration = 8;
     public GameObject burnVFX;
    public virtual MaterialType materialType { get; set; }
-   protected int originalLayer; 
+   protected int originalLayer;
+
+   public bool isEnabled = true;
    
    public float burnTimer = 3f;
     //freeze
@@ -34,8 +38,16 @@ public class SystemicClass : MonoBehaviour
     
     //hit fire, create steam
     
+   
+    public int maxSmokeColliders = 3;
+
+    public Collider[] smokeColliders;
     //ice at fire, then ice turns to steam
-    
+
+    public bool shouldBlowSmoke = true;
+   
+    public float smokeBoxScale;
+    public float pushForce;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -49,6 +61,7 @@ public class SystemicClass : MonoBehaviour
        _renderer = GetComponent<Renderer>();
        originalLayer = gameObject.layer;
        _materials = _renderer.materials;
+       smokeColliders = new Collider[maxSmokeColliders];;
        Default();
 
     }
@@ -83,11 +96,13 @@ public class SystemicClass : MonoBehaviour
        StopAllCoroutines();
        SubstanceType = SubstanceType.Normal;
        gameObject.layer = originalLayer;
+       SetMaterialProperty();
        ClearEffects();
     }
     public virtual void Freeze()
     {
        // throw new System.NotImplementedException();
+       SetMaterialProperty(0, 1);
        SubstanceType = SubstanceType.Frozen;
        gameObject.layer = LayerMask.NameToLayer("Ice");
        if (smokeVFX != null)
@@ -97,6 +112,15 @@ public class SystemicClass : MonoBehaviour
        
     }
 
+    protected void SetMaterialProperty(int fireState = 0, int iceState = 0)
+    {
+       foreach (Material material in _materials)
+       {
+          material.SetFloat("_IsOnFire", fireState);
+          material.SetFloat("_IsFrozen", iceState);
+       }
+    }
+   
     public virtual void Melt()
     {
        if (materialType == MaterialType.Ice)
@@ -106,6 +130,7 @@ public class SystemicClass : MonoBehaviour
 
        else
        {
+         SetMaterialProperty();
           StartCoroutine(WetCoroutine());
        }
       
@@ -114,12 +139,19 @@ public class SystemicClass : MonoBehaviour
 
     public virtual void Steam()
     {
+         SetMaterialProperty();
+         ClearEffects();
+         Default();
        StartCoroutine(SmokeCoroutine());
        // throw new System.NotImplementedException();
     }
 
+    
+   
     public virtual void Ignite()
+    
     {
+       SetMaterialProperty(1,0);
        gameObject.layer = LayerMask.NameToLayer("Fire");
        SubstanceType = SubstanceType.Burning;
        if (smokeVFX != null)
@@ -139,12 +171,10 @@ public class SystemicClass : MonoBehaviour
     {
        gameObject.layer = LayerMask.NameToLayer("Default");  
        SubstanceType = SubstanceType.Smoke;
-       ClearEffects();
        if (smokeVFX != null)
        {
           smokeVFX.SetActive(true);
        }
-      
        yield return new WaitForSeconds(smokeEffectDuration);
        Default();
     }
@@ -170,7 +200,30 @@ public class SystemicClass : MonoBehaviour
        
       
     }
-    
+
+    public virtual void FixedUpdate()
+    {
+       /*if(smokeVFX == null)
+          return;
+       if(!shouldBlowSmoke)
+          return;
+       if(SubstanceType != SubstanceType.Smoke)
+          return;
+       if (Physics.OverlapBoxNonAlloc(smokeVFX.transform.position, smokeVFX.transform.lossyScale / 2, smokeColliders,
+              Quaternion.identity) > 0)
+       {
+          for (int i = 0; i < smokeColliders.Length; i++)
+          {
+             if(smokeColliders[i] == gameObject.GetComponent<Collider>())
+                continue;
+             if (smokeColliders[i].TryGetComponent(out Rigidbody rb))
+             {
+                rb.AddForce(smokeVFX.transform.up * pushForce, ForceMode.Impulse);
+             }
+          }
+       }*/
+    }
+
     public virtual IEnumerator WetCoroutine()
     {
        
@@ -194,9 +247,20 @@ public class SystemicClass : MonoBehaviour
        {
           burnVFX.SetActive(true);
        }
+
+       if (materialType == MaterialType.Ice)
+       {
+          Tween tween = transform.DOScale(transform.localScale * 0.1f, burnTimer);
+          yield return tween.WaitForCompletion();
+          Destroy(gameObject);
+       }
+
+       else
+       {
+          yield return new WaitForSeconds(burnTimer);
+          Destroy(gameObject);
+       }
       
-       yield return new WaitForSeconds(burnTimer);
-       Destroy(gameObject);
     }
 
     public virtual void OnTriggerEnter(Collider other)

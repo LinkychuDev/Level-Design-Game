@@ -48,6 +48,8 @@ public class PlayerRBMovement : MonoBehaviour
 
     private Vector3 moveInput;
     private Vector3 moveDir;
+    
+    bool isSprinting = false;
     private void Awake()
     {
         inputManager = InputManager.instance;
@@ -59,6 +61,15 @@ public class PlayerRBMovement : MonoBehaviour
     {
         inputManager.input.Player.Jump.started += context => isJumping = true;
         inputManager.input.Player.Jump.canceled += context => isJumping = false;
+        inputManager.input.Player.Sprint.started += context => isSprinting = !isSprinting;
+        
+    }
+
+    private void OnDisable()
+    {
+        inputManager.input.Player.Jump.started -= context => isJumping = true;
+        inputManager.input.Player.Jump.canceled -= context => isJumping = false;
+        inputManager.input.Player.Sprint.started -= context => isSprinting = !isSprinting;
     }
 
 
@@ -76,6 +87,7 @@ public class PlayerRBMovement : MonoBehaviour
     private void Update()
     {
         int direction = 0;
+        
         animator.SetBool(_animIDGrounded, isGrounded);
         animator.SetBool(_animIDJump, isJumping);
         
@@ -146,7 +158,7 @@ public class PlayerRBMovement : MonoBehaviour
     {
         moveInput = inputManager.input.Player.Move.ReadValue<Vector2>();
 
-        if (inputManager.input.Player.Sprint.IsPressed())
+        if (isSprinting)
         {
             moveSpeed = runSpeed;
         }

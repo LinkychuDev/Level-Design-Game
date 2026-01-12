@@ -16,10 +16,9 @@ public class PlayerCameraController : MonoBehaviour
 
     [Tooltip("How far in degrees can you move the camera up")]
 
-    private float _topClamp;
+    
     public float TopClamp = 70.0f;
-
-    public float TopClampAim = 80.0f;
+    
     
     [Tooltip("How far in degrees can you move the camera down")]
     public float BottomClamp = -30.0f;
@@ -42,7 +41,11 @@ public class PlayerCameraController : MonoBehaviour
 
     [SerializeField] private float aimSensitivity = 1.2f;
 
-    private float sensitivity = 1;
+    [SerializeField] private float sensitivity = 1;
+
+    private Vector2 lookInput;
+
+    private bool isAiming;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -52,6 +55,7 @@ public class PlayerCameraController : MonoBehaviour
         _input = InputManager.instance;
     }
 
+    
 
     private void OnEnable()
     {
@@ -68,28 +72,24 @@ public class PlayerCameraController : MonoBehaviour
     {
         if (isAiming)
         {
+            
             sensitivity = aimSensitivity;
-            _topClamp = TopClampAim;
+           // _topClamp = TopClampAim;*/
         }
         else
         {
+            this.isAiming = false;
             sensitivity = 1;
-            _topClamp = TopClamp;
+           // _topClamp = TopClamp;*/
         }
-        /*
-        if (isAiming)
-        {[
-            CinemachineCameraTarget = CinemachineCameraTargetAim;
-        }
-
-        else
-        {
-            CinemachineCameraTarget = CinemachineCameraTargetNorm;
-        }
-        */
         
-       // UpdateYaw();
     }
+
+    private void Update()
+    {
+        lookInput = _input.input.Player.Look.ReadValue<Vector2>();
+    }
+
     private void UpdateYaw()
     {
         _cinemachineTargetYaw = CinemachineCameraTarget.transform.rotation.eulerAngles.y;
@@ -102,8 +102,7 @@ public class PlayerCameraController : MonoBehaviour
     
     private void CameraRotation()
     {
-        
-       Vector2 lookInput = _input.input.Player.Look.ReadValue<Vector2>();
+       
         
         // if there is an input and camera position is not fixed
         if (lookInput.sqrMagnitude >= _threshold && !LockCameraPosition)
@@ -119,7 +118,7 @@ public class PlayerCameraController : MonoBehaviour
 
         // clamp our rotations so our values are limited 360 degrees
         _cinemachineTargetYaw = ClampAngle(_cinemachineTargetYaw, float.MinValue, float.MaxValue);
-        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, _topClamp);
+        _cinemachineTargetPitch = ClampAngle(_cinemachineTargetPitch, BottomClamp, TopClamp);
 
         // Cinemachine will follow this target
         CinemachineCameraTarget.transform.rotation = Quaternion.Euler(_cinemachineTargetPitch + CameraAngleOverride,

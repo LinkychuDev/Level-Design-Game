@@ -10,4 +10,12 @@ public class KillPlane : MonoBehaviour
             GameManager.instance.Death();
         }
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.CompareTag("Player"))
+        {
+            GameManager.instance.Death();
+        }
+    }
 }

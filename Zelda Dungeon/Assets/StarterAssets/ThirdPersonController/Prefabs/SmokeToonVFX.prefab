@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 232138442170343992}
   - component: {fileID: 7395686394224617970}
   - component: {fileID: 3119183830645448985}
+  - component: {fileID: 3268475372775433153}
+  - component: {fileID: 6272027964815016053}
   m_Layer: 0
   m_Name: SmokeToonVFX
   m_TagString: Untagged
@@ -118,3 +120,41 @@ VFXRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
+--- !u!65 &3268475372775433153
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218942546226139022}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1.5807005, z: 1}
+  m_Center: {x: 0, y: 1.2805437, z: 0}
+--- !u!114 &6272027964815016053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218942546226139022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c44e0d9c084944c389863529b35cd52f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SmokeScript
+  pushForce: 8
+  smokeRadius: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0

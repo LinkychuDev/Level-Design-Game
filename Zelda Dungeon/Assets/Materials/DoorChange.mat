@@ -26,7 +26,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: d1118dda59970a2449ee890fa247c4c5, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -110,18 +110,19 @@ Material:
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _EnvironmentState: 0
-    - _FireFresnelPower: -0.66
+    - _FireFresnelAmount: 0
+    - _FireFresnelPower: 0.52
     - _FireFresnelStrength: 1.27
     - _FireTimer: 0.8
-    - _FresnelPower: 2
+    - _FresnelPower: 1
     - _FresnelStrength: 3.12
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _HighlightBlend: 0
-    - _HighlightedFadeEnd: 40
+    - _HighlightBlend: 0.88
+    - _HighlightedFadeEnd: 8.8
     - _HighlightedFadeStart: 0
-    - _HighlightedFresnel: 1.49
+    - _HighlightedFresnel: 0.99
     - _IceAlpha: 0.9
     - _IceBlend: 1
     - _IceFresnelAmount: 2.14
@@ -135,13 +136,13 @@ Material:
     - _IsOnFire: 0
     - _IsSystemic: 0
     - _Metallic: 0
-    - _NonCapableBlend: 0.4
+    - _NonCapableBlend: 0.62
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 0.5
+    - _Smoothness: 0
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -155,7 +156,7 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 0.6981132, g: 0.48069766, b: 0.23380208, a: 1}
+    - _BaseColor: {r: 0.6935088, g: 0.6040851, b: 0.7075472, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
@@ -163,10 +164,11 @@ Material:
     - _FireFresnelColour: {r: 2.30083, g: 0.56024635, b: 0.19273964, a: 1}
     - _HighlightedColourFire: {r: 1.493261, g: 0.3076766, b: 0.2394851, a: 1}
     - _HighlightedColourIce: {r: 0.4392156, g: 1.108189, b: 1.678431, a: 1}
+    - _HighlightedColourIceBase: {r: 0.43921557, g: 1.108189, b: 1.6784312, a: 1}
     - _HoveredColour: {r: 1.644205, g: 1.556492, b: 0.5916477, a: 1}
     - _IceColour: {r: 0.57720804, g: 0.7969562, b: 0.800539, a: 1}
     - _IceFresnelColour: {r: 0.21313557, g: 0.38901314, b: 1.2072264, a: 1}
-    - _IceUVScale: {r: 0.5, g: 0.5, b: 0, a: 0}
+    - _IceUVScale: {r: 1, g: 1, b: 0, a: 0}
     - _IceUVs: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Tiling: {r: 1, g: 1, b: 0, a: 0}
